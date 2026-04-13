@@ -10,7 +10,7 @@ import { NEEDS_CATEGORIES, WANTS_CATEGORIES } from '../../lib/types';
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
-interface MiniGaugeProps {
+interface RingProps {
   label: string;
   spent: number;
   budget: number;
@@ -18,9 +18,9 @@ interface MiniGaugeProps {
   trackColor: string;
 }
 
-function MiniGauge({ label, spent, budget, color, trackColor }: MiniGaugeProps) {
-  const size = 90;
-  const strokeWidth = 7;
+function BudgetRing({ label, spent, budget, color, trackColor }: RingProps) {
+  const size = 72;
+  const strokeWidth = 6;
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const ratio = clamp(budget > 0 ? spent / budget : 0, 0, 1);
@@ -28,7 +28,7 @@ function MiniGauge({ label, spent, budget, color, trackColor }: MiniGaugeProps) 
 
   const fillColor = ratio >= 1 ? '#DC2626' : ratio >= 0.85 ? '#F97316' : color;
 
-  const animatedRatio = useDerivedValue(() => withTiming(ratio, { duration: 600 }), [ratio]);
+  const animatedRatio = useDerivedValue(() => withTiming(ratio, { duration: 800 }), [ratio]);
   const animatedProps = useAnimatedProps(() => ({
     strokeDashoffset: circumference * (1 - animatedRatio.value),
   }));
@@ -60,16 +60,16 @@ function MiniGauge({ label, spent, budget, color, trackColor }: MiniGaugeProps) 
           />
         </Svg>
         <View className="absolute items-center justify-center" style={{ width: size, height: size }}>
-          <Text className="font-sans-bold text-sm" style={{ color: fillColor }}>
+          <Text className="font-sans-bold" style={{ fontSize: 13, color: fillColor }}>
             {percentage}%
           </Text>
         </View>
       </View>
-      <Text className="font-sans-semibold text-xs text-foreground mt-1.5">
+      <Text className="font-sans-medium text-xs text-foreground mt-1">
         {label}
       </Text>
-      <Text className="font-sans text-xs text-muted-foreground mt-0.5">
-        {formatPLN(spent)} / {formatPLN(budget)}
+      <Text className="font-sans text-xs text-muted-foreground" style={{ fontSize: 10 }}>
+        {formatPLN(spent)}
       </Text>
     </View>
   );
@@ -99,11 +99,16 @@ export function BudgetAllocation() {
       .reduce((sum, e) => sum + e.amount, 0);
 
   return (
-    <View className="bg-card rounded-2xl p-4 mx-4 mb-3">
-      <View className="flex-row">
-        <MiniGauge label="Needs" spent={needsSpent} budget={needs} color={colors.primaryLight} trackColor={colors.trackBackground} />
-        <MiniGauge label="Wants" spent={wantsSpent} budget={wants} color={colors.warning} trackColor={colors.trackBackground} />
-        <MiniGauge label="Savings" spent={savingsSpent} budget={savings} color={colors.success} trackColor={colors.trackBackground} />
+    <View className="mx-4 mb-3">
+      <Text className="font-sans-semibold text-sm text-foreground mb-3 px-1">
+        Budget
+      </Text>
+      <View className="bg-card rounded-2xl py-4 px-2">
+        <View className="flex-row">
+          <BudgetRing label="Needs" spent={needsSpent} budget={needs} color={colors.primaryLight} trackColor={colors.trackBackground} />
+          <BudgetRing label="Wants" spent={wantsSpent} budget={wants} color={colors.warning} trackColor={colors.trackBackground} />
+          <BudgetRing label="Savings" spent={savingsSpent} budget={savings} color={colors.success} trackColor={colors.trackBackground} />
+        </View>
       </View>
     </View>
   );

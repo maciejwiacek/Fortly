@@ -2,32 +2,53 @@ import { useState } from 'react';
 import { ScrollView, View, Text, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
-import { PageHeader } from '../../components/layout/page-header';
+import { AnimatedTabScreen } from '../../components/navigation/AnimatedTabScreen';
 import { GoalCard } from '../../components/goals/goal-card';
 import { CreateGoalSheet } from '../../components/goals/create-goal-sheet';
 import { InvestmentSection } from '../../components/investments/investment-checklist';
 import { useAllGoalsProgress } from '../../hooks/use-goal-progress';
+import { useThemeColors } from '../../hooks/use-theme-colors';
 
 export default function GoalsScreen() {
   const goals = useAllGoalsProgress();
+  const colors = useThemeColors();
   const [showCreate, setShowCreate] = useState(false);
 
   return (
+    <AnimatedTabScreen>
     <SafeAreaView className="flex-1 bg-background" edges={['top']}>
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
-        <View className="flex-row items-center justify-between pr-4">
-          <PageHeader title="Goals" subtitle="Track your financial targets" />
+        {/* Header */}
+        <View className="flex-row items-center justify-between px-4 pt-4 pb-2">
+          <View>
+            <Text className="font-sans-bold text-2xl text-foreground">Goals</Text>
+            <Text className="font-sans text-sm text-muted-foreground mt-0.5">
+              Track your financial targets
+            </Text>
+          </View>
           <Pressable
             onPress={() => setShowCreate(true)}
-            className="bg-primary rounded-full w-10 h-10 items-center justify-center"
+            className="bg-primary rounded-xl w-10 h-10 items-center justify-center"
           >
             <Feather name="plus" size={20} color="#FFFFFF" />
           </Pressable>
         </View>
 
         {goals.length === 0 ? (
-          <View className="items-center py-12 mx-4">
-            <Text className="text-4xl mb-3">🎯</Text>
+          <View className="items-center py-16 mx-4">
+            <View
+              style={{
+                width: 64,
+                height: 64,
+                borderRadius: 16,
+                backgroundColor: colors.card,
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: 16,
+              }}
+            >
+              <Feather name="target" size={28} color={colors.mutedForeground} />
+            </View>
             <Text className="font-sans-semibold text-base text-foreground mb-1">
               No goals yet
             </Text>
@@ -36,10 +57,12 @@ export default function GoalsScreen() {
             </Text>
           </View>
         ) : (
-          goals.map((goal) => <GoalCard key={goal.id} goal={goal} />)
+          <View className="mt-2">
+            {goals.map((goal) => <GoalCard key={goal.id} goal={goal} />)}
+          </View>
         )}
 
-        <View className="mt-4">
+        <View className="mt-2">
           <InvestmentSection />
         </View>
 
@@ -48,5 +71,6 @@ export default function GoalsScreen() {
 
       {showCreate && <CreateGoalSheet onClose={() => setShowCreate(false)} />}
     </SafeAreaView>
+    </AnimatedTabScreen>
   );
 }

@@ -21,29 +21,54 @@ export function ChatInput({ onSend, disabled }: Props) {
   };
 
   return (
-    <View className="flex-row items-end px-4 py-3 bg-card"
-      style={{ borderTopWidth: 1, borderTopColor: colors.border }}
-    >
-      <TextInput
-        className="flex-1 bg-background rounded-xl px-4 py-3 text-foreground font-sans text-sm mr-3"
-        placeholder="Zapytaj o finanse..."
-        placeholderTextColor={colors.muted}
-        value={text}
-        onChangeText={setText}
-        onSubmitEditing={handleSend}
-        returnKeyType="send"
-        editable={!disabled}
-        multiline
-        style={{ maxHeight: 100 }}
-      />
-      <Pressable
-        onPress={handleSend}
-        disabled={!canSend}
-        className="w-10 h-10 rounded-full items-center justify-center"
-        style={{ backgroundColor: canSend ? colors.primaryLight : colors.primaryLight + '30' }}
+    <View className="px-4 py-2">
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          backgroundColor: colors.card,
+          borderRadius: 24,
+          borderWidth: 1,
+          borderColor: colors.border,
+          paddingLeft: 16,
+          paddingRight: 6,
+          minHeight: 44,
+        }}
       >
-        <Feather name="send" size={18} color={canSend ? '#FFFFFF' : colors.muted} />
-      </Pressable>
+        <TextInput
+          placeholder="Ask about your finances..."
+          placeholderTextColor={colors.muted}
+          value={text}
+          onChangeText={setText}
+          onSubmitEditing={handleSend}
+          returnKeyType="send"
+          editable={!disabled}
+          multiline
+          style={{
+            flex: 1,
+            fontFamily: 'Inter_400Regular',
+            fontSize: 14,
+            color: colors.foreground,
+            maxHeight: 80,
+            paddingVertical: 10,
+          }}
+        />
+        <Pressable
+          onPress={handleSend}
+          disabled={!canSend}
+          style={{
+            width: 32,
+            height: 32,
+            borderRadius: 16,
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: canSend ? colors.primary : colors.primary + '20',
+            marginLeft: 8,
+          }}
+        >
+          <Feather name="arrow-up" size={16} color={canSend ? '#FFFFFF' : colors.muted} />
+        </Pressable>
+      </View>
     </View>
   );
 }

@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { AnimatedTabScreen } from '../../components/navigation/AnimatedTabScreen';
 import { ChatInput } from '../../components/advisor/ChatInput';
 import { ChatMessage } from '../../components/advisor/ChatMessage';
 import { SuggestedPrompts } from '../../components/advisor/SuggestedPrompts';
@@ -21,13 +22,15 @@ import type { ChatMessage as ChatMessageType } from '../../lib/types';
 import { useFinanceStore } from '../../stores/finance-store';
 import { useThemeColors } from '../../hooks/use-theme-colors';
 
-function useKeyboardHeight() {
+function useKeyboard() {
   const height = useRef(new Animated.Value(0)).current;
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     const show = Keyboard.addListener(
       Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
       (e) => {
+        setIsOpen(true);
         Animated.timing(height, {
           toValue: e.endCoordinates.height,
           duration: e.duration || 250,
@@ -38,6 +41,7 @@ function useKeyboardHeight() {
     const hide = Keyboard.addListener(
       Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide',
       (e) => {
+        setIsOpen(false);
         Animated.timing(height, {
           toValue: 0,
           duration: e.duration || 250,
@@ -48,7 +52,7 @@ function useKeyboardHeight() {
     return () => { show.remove(); hide.remove(); };
   }, [height]);
 
-  return height;
+  return { height, isOpen };
 }
 
 export default function AdvisorScreen() {
@@ -60,7 +64,7 @@ export default function AdvisorScreen() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const listRef = useRef<FlatList<ChatMessageType>>(null);
-  const keyboardHeight = useKeyboardHeight();
+  const { height: keyboardHeight, isOpen: keyboardOpen } = useKeyboard();
 
   useEffect(() => {
     if (chatMessages.length > 0) {
@@ -158,62 +162,66 @@ export default function AdvisorScreen() {
   ];
 
   return (
-    <SafeAreaView className="flex-1 bg-background" edges={['top']}>
-      {/* Header */}
-      <View className="flex-row items-center justify-between px-5 pt-4 pb-3">
-        <View>
-          <Text className="font-sans-bold text-2xl text-foreground">
-            AI Doradca
-          </Text>
-          <Text className="font-sans text-sm text-muted-foreground mt-0.5">
-            Twój osobisty doradca finansowy
-          </Text>
-        </View>
-        {chatMessages.length > 0 && (
-          <Pressable onPress={handleClear} className="p-2">
-            <Feather name="trash-2" size={20} color={colors.mutedForeground} />
-          </Pressable>
-        )}
-      </View>
-
-      {/* Chat area */}
-      {chatMessages.length === 0 && !isLoading ? (
-        <SuggestedPrompts onSelect={handleSend} />
-      ) : (
-        <FlatList
-          ref={listRef}
-          data={displayData}
-          renderItem={({ item }) => (
-            <ChatMessage
-              message={item}
-              isLoading={item.id === '__loading__'}
-            />
-          )}
-          contentContainerStyle={{ paddingHorizontal: 16, paddingVertical: 8 }}
-          keyExtractor={(item) => item.id}
-          style={{ flex: 1 }}
-        />
-      )}
-
-      {/* Error banner */}
-      {error && (
-        <View className="mx-4 mb-2 bg-card rounded-xl p-3 flex-row items-center justify-between"
-          style={{ borderWidth: 1, borderColor: 'rgba(220, 38, 38, 0.3)' }}
-        >
-          <Text className="font-sans text-xs text-destructive flex-1 mr-2">
-            {error}
-          </Text>
-          <Pressable onPress={handleRetry}>
-            <Text className="font-sans-medium text-xs text-secondary">
-              Ponów
+    <AnimatedTabScreen>
+      <SafeAreaView className="flex-1 bg-background" edges={['top']}>
+        {/* Header */}
+        <View className="flex-row items-center justify-between px-4 pt-4 pb-3">
+          <View>
+            <Text className="font-sans-bold text-2xl text-foreground">
+              AI Advisor
             </Text>
-          </Pressable>
+            <Text className="font-sans text-sm text-muted-foreground mt-0.5">
+              Your personal financial advisor
+            </Text>
+          </View>
+          {chatMessages.length > 0 && (
+            <Pressable onPress={handleClear} className="p-2 bg-card rounded-xl">
+              <Feather name="trash-2" size={18} color={colors.mutedForeground} />
+            </Pressable>
+          )}
         </View>
-      )}
 
-      {/* Input */}
-      <ChatInput onSend={handleSend} disabled={isLoading} />
-      <Animated.View style={{ height: keyboardHeight }} />
-    </SafeAreaView>
+        {/* Chat area */}
+        {chatMessages.length === 0 && !isLoading ? (
+          <SuggestedPrompts onSelect={handleSend} />
+        ) : (
+          <FlatList
+            ref={listRef}
+            data={displayData}
+            renderItem={({ item }) => (
+              <ChatMessage
+                message={item}
+                isLoading={item.id === '__loading__'}
+              />
+            )}
+            contentContainerStyle={{ paddingHorizontal: 16, paddingVertical: 8 }}
+            keyExtractor={(item) => item.id}
+            style={{ flex: 1 }}
+          />
+        )}
+
+        {/* Error banner */}
+        {error && (
+          <View className="mx-4 mb-2 bg-card rounded-xl p-3 flex-row items-center justify-between"
+            style={{ borderWidth: 1, borderColor: colors.destructive + '30' }}
+          >
+            <Text className="font-sans text-xs text-destructive flex-1 mr-2">
+              {error}
+            </Text>
+            <Pressable onPress={handleRetry}>
+              <Text className="font-sans-medium text-xs text-secondary">
+                Retry
+              </Text>
+            </Pressable>
+          </View>
+        )}
+
+        {/* Input */}
+        <ChatInput onSend={handleSend} disabled={isLoading} />
+        <Animated.View style={{ height: keyboardHeight }} />
+        {/* Spacer for floating tab bar — hidden when keyboard is open */}
+        {!keyboardOpen && <View style={{ height: 110 }} />}
+      </SafeAreaView>
+    </AnimatedTabScreen>
   );
 }
