@@ -1,0 +1,217 @@
+import { Feather } from '@expo/vector-icons';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  Alert,
+  Animated,
+  FlatList,
+  Keyboard,
+  Platform,
+  Pressable,
+  Text,
+  View,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { ChatInput } from '../../components/advisor/ChatInput';
+import { ChatMessage } from '../../components/advisor/ChatMessage';
+import { SuggestedPrompts } from '../../components/advisor/SuggestedPrompts';
+import { buildFinancialContext } from '../../lib/ai-context';
+import { chatWithAI } from '../../lib/gemini-api';
+import type { ChatMessage as ChatMessageType } from '../../lib/types';
+import { useFinanceStore } from '../../stores/finance-store';
+
+function useKeyboardHeight() {
+  const height = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    const show = Keyboard.addListener(
+      Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
+      (e) => {
+        Animated.timing(height, {
+          toValue: e.endCoordinates.height - 85,
+          duration: e.duration || 250,
+          useNativeDriver: false,
+        }).start();
+      }
+    );
+    const hide = Keyboard.addListener(
+      Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide',
+      (e) => {
+        Animated.timing(height, {
+          toValue: 0,
+          duration: e.duration || 250,
+          useNativeDriver: false,
+        }).start();
+      }
+    );
+    return () => { show.remove(); hide.remove(); };
+  }, [height]);
+
+  return height;
+}
+
+export default function AdvisorScreen() {
+  const chatMessages = useFinanceStore((s) => s.chatMessages);
+  const addChatMessage = useFinanceStore((s) => s.addChatMessage);
+  const clearChat = useFinanceStore((s) => s.clearChat);
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const listRef = useRef<FlatList<ChatMessageType>>(null);
+  const keyboardHeight = useKeyboardHeight();
+
+  useEffect(() => {
+    if (chatMessages.length > 0) {
+      setTimeout(() => {
+        listRef.current?.scrollToEnd({ animated: true });
+      }, 100);
+    }
+  }, [chatMessages.length]);
+
+  const handleSend = useCallback(
+    async (text: string) => {
+      addChatMessage({ role: 'user', content: text });
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const state = useFinanceStore.getState();
+        const context = buildFinancialContext({
+          monthlyIncome: state.monthlyIncome,
+          budgetStrategy: state.budgetStrategy,
+          transactions: state.transactions,
+          goals: state.goals,
+          goalContributions: state.goalContributions,
+          investmentEntries: state.investmentEntries,
+        });
+
+        const response = await chatWithAI(state.chatMessages, context);
+
+        if (response) {
+          addChatMessage({ role: 'assistant', content: response });
+        } else {
+          setError('Nie udało się połączyć z AI. Sprawdź połączenie i spróbuj ponownie.');
+        }
+      } catch {
+        setError('Wystąpił błąd. Spróbuj ponownie.');
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [addChatMessage]
+  );
+
+  const handleClear = useCallback(() => {
+    Alert.alert(
+      'Nowa rozmowa',
+      'Czy na pewno chcesz wyczyścić historię czatu?',
+      [
+        { text: 'Anuluj', style: 'cancel' },
+        { text: 'Wyczyść', style: 'destructive', onPress: clearChat },
+      ]
+    );
+  }, [clearChat]);
+
+  const handleRetry = useCallback(async () => {
+    setError(null);
+    setIsLoading(true);
+
+    try {
+      const state = useFinanceStore.getState();
+      const context = buildFinancialContext({
+        monthlyIncome: state.monthlyIncome,
+        budgetStrategy: state.budgetStrategy,
+        transactions: state.transactions,
+        goals: state.goals,
+        goalContributions: state.goalContributions,
+        investmentEntries: state.investmentEntries,
+      });
+
+      const response = await chatWithAI(state.chatMessages, context);
+
+      if (response) {
+        addChatMessage({ role: 'assistant', content: response });
+      } else {
+        setError('Nie udało się połączyć z AI. Sprawdź połączenie i spróbuj ponownie.');
+      }
+    } catch {
+      setError('Wystąpił błąd. Spróbuj ponownie.');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [addChatMessage]);
+
+  const displayData: ChatMessageType[] = [
+    ...chatMessages,
+    ...(isLoading
+      ? [
+          {
+            id: '__loading__',
+            role: 'assistant' as const,
+            content: '',
+            timestamp: '',
+          },
+        ]
+      : []),
+  ];
+
+  return (
+    <SafeAreaView className="flex-1 bg-background" edges={['top']}>
+      {/* Header */}
+      <View className="flex-row items-center justify-between px-5 pt-4 pb-3">
+        <View>
+          <Text className="font-sans-bold text-2xl text-foreground">
+            AI Doradca
+          </Text>
+          <Text className="font-sans text-sm text-muted-foreground mt-0.5">
+            Twój osobisty doradca finansowy
+          </Text>
+        </View>
+        {chatMessages.length > 0 && (
+          <Pressable onPress={handleClear} className="p-2">
+            <Feather name="trash-2" size={20} color="#94A3B8" />
+          </Pressable>
+        )}
+      </View>
+
+      {/* Chat area */}
+      {chatMessages.length === 0 && !isLoading ? (
+        <SuggestedPrompts onSelect={handleSend} />
+      ) : (
+        <FlatList
+          ref={listRef}
+          data={displayData}
+          renderItem={({ item }) => (
+            <ChatMessage
+              message={item}
+              isLoading={item.id === '__loading__'}
+            />
+          )}
+          contentContainerStyle={{ paddingHorizontal: 16, paddingVertical: 8 }}
+          keyExtractor={(item) => item.id}
+          style={{ flex: 1 }}
+        />
+      )}
+
+      {/* Error banner */}
+      {error && (
+        <View className="mx-4 mb-2 bg-card rounded-xl p-3 flex-row items-center justify-between"
+          style={{ borderWidth: 1, borderColor: 'rgba(220, 38, 38, 0.3)' }}
+        >
+          <Text className="font-sans text-xs text-destructive flex-1 mr-2">
+            {error}
+          </Text>
+          <Pressable onPress={handleRetry}>
+            <Text className="font-sans-medium text-xs text-secondary">
+              Ponów
+            </Text>
+          </Pressable>
+        </View>
+      )}
+
+      {/* Input */}
+      <ChatInput onSend={handleSend} disabled={isLoading} />
+      <Animated.View style={{ height: keyboardHeight }} />
+    </SafeAreaView>
+  );
+}
