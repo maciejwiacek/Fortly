@@ -40,7 +40,8 @@ export default function SettingsScreen() {
   const [fixedNeeds, setFixedNeeds] = useState(String((budgetStrategy.fixedNeeds ?? 0) / 100));
   const [fixedWants, setFixedWants] = useState(String((budgetStrategy.fixedWants ?? 0) / 100));
   const [fixedSavings, setFixedSavings] = useState(String((budgetStrategy.fixedSavings ?? 0) / 100));
-  const [saved, setSaved] = useState(false);
+  const [savedIncome, setSavedIncome] = useState(false);
+  const [savedCustom, setSavedCustom] = useState(false);
 
   const handleSaveIncome = () => {
     const newIncome = Math.round(parseFloat(incomeText.replace(',', '.')) * 100);
@@ -50,8 +51,8 @@ export default function SettingsScreen() {
     }
     setMonthlyIncome(newIncome);
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+    setSavedIncome(true);
+    setTimeout(() => setSavedIncome(false), 2000);
   };
 
   const handleStrategySelect = (type: BudgetStrategyType) => {
@@ -94,6 +95,8 @@ export default function SettingsScreen() {
       });
     }
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    setSavedCustom(true);
+    setTimeout(() => setSavedCustom(false), 2000);
   };
 
   const income = monthlyIncome;
@@ -130,23 +133,23 @@ export default function SettingsScreen() {
           <Text className="font-sans-semibold text-sm text-foreground mb-2">
             Monthly Net Income
           </Text>
-          <View className="bg-card rounded-xl px-4 py-3 flex-row items-center mb-2">
+          <View className="bg-card rounded-xl px-4 flex-row items-center mb-2" style={{ minHeight: 52 }}>
             <TextInput
               value={incomeText}
               onChangeText={setIncomeText}
               keyboardType="decimal-pad"
-              className="flex-1 font-sans-medium text-lg text-foreground"
               placeholderTextColor="#64748B"
               selectionColor="#3B82F6"
+              style={{ flex: 1, fontFamily: 'Inter_500Medium', fontSize: 18, color: '#F8FAFC', paddingVertical: 14 }}
             />
             <Text className="font-sans text-lg text-muted-foreground">zl</Text>
           </View>
           <Pressable
             onPress={handleSaveIncome}
-            className={`rounded-xl py-3 items-center mb-6 ${saved ? 'bg-success' : 'bg-primary'}`}
+            className={`rounded-xl py-3 items-center mb-6 ${savedIncome ? 'bg-success' : 'bg-primary'}`}
           >
             <Text className="font-sans-semibold text-sm text-white">
-              {saved ? 'Saved!' : 'Update Income'}
+              {savedIncome ? 'Saved!' : 'Update Income'}
             </Text>
           </Pressable>
 
@@ -247,8 +250,8 @@ export default function SettingsScreen() {
                         value={customNeeds}
                         onChangeText={setCustomNeeds}
                         keyboardType="number-pad"
-                        className="bg-background rounded-lg px-3 py-2 font-sans-medium text-foreground text-center"
                         selectionColor="#3B82F6"
+                        style={{ backgroundColor: '#0F172A', borderRadius: 8, paddingHorizontal: 12, paddingVertical: 10, fontFamily: 'Inter_500Medium', color: '#F8FAFC', textAlign: 'center' }}
                       />
                     </View>
                     <View className="flex-1">
@@ -257,8 +260,8 @@ export default function SettingsScreen() {
                         value={customWants}
                         onChangeText={setCustomWants}
                         keyboardType="number-pad"
-                        className="bg-background rounded-lg px-3 py-2 font-sans-medium text-foreground text-center"
                         selectionColor="#3B82F6"
+                        style={{ backgroundColor: '#0F172A', borderRadius: 8, paddingHorizontal: 12, paddingVertical: 10, fontFamily: 'Inter_500Medium', color: '#F8FAFC', textAlign: 'center' }}
                       />
                     </View>
                     <View className="flex-1">
@@ -267,8 +270,8 @@ export default function SettingsScreen() {
                         value={customSavings}
                         onChangeText={setCustomSavings}
                         keyboardType="number-pad"
-                        className="bg-background rounded-lg px-3 py-2 font-sans-medium text-foreground text-center"
                         selectionColor="#3B82F6"
+                        style={{ backgroundColor: '#0F172A', borderRadius: 8, paddingHorizontal: 12, paddingVertical: 10, fontFamily: 'Inter_500Medium', color: '#F8FAFC', textAlign: 'center' }}
                       />
                     </View>
                   </View>
@@ -281,45 +284,39 @@ export default function SettingsScreen() {
                   <View className="flex-row gap-2 mb-3">
                     <View className="flex-1">
                       <Text className="font-sans text-xs text-muted-foreground mb-1">Needs</Text>
-                      <View className="bg-background rounded-lg px-3 py-2 flex-row items-center">
-                        <TextInput
-                          value={fixedNeeds}
-                          onChangeText={setFixedNeeds}
-                          keyboardType="decimal-pad"
-                          placeholder="0"
-                          placeholderTextColor="#64748B"
-                          className="flex-1 font-sans-medium text-foreground text-center"
-                          selectionColor="#3B82F6"
-                        />
-                      </View>
+                      <TextInput
+                        value={fixedNeeds}
+                        onChangeText={setFixedNeeds}
+                        keyboardType="decimal-pad"
+                        placeholder="0"
+                        placeholderTextColor="#64748B"
+                        selectionColor="#3B82F6"
+                        style={{ backgroundColor: '#0F172A', borderRadius: 8, paddingHorizontal: 12, paddingVertical: 10, fontFamily: 'Inter_500Medium', color: '#F8FAFC', textAlign: 'center' }}
+                      />
                     </View>
                     <View className="flex-1">
                       <Text className="font-sans text-xs text-muted-foreground mb-1">Wants</Text>
-                      <View className="bg-background rounded-lg px-3 py-2 flex-row items-center">
-                        <TextInput
-                          value={fixedWants}
-                          onChangeText={setFixedWants}
-                          keyboardType="decimal-pad"
-                          placeholder="0"
-                          placeholderTextColor="#64748B"
-                          className="flex-1 font-sans-medium text-foreground text-center"
-                          selectionColor="#3B82F6"
-                        />
-                      </View>
+                      <TextInput
+                        value={fixedWants}
+                        onChangeText={setFixedWants}
+                        keyboardType="decimal-pad"
+                        placeholder="0"
+                        placeholderTextColor="#64748B"
+                        selectionColor="#3B82F6"
+                        style={{ backgroundColor: '#0F172A', borderRadius: 8, paddingHorizontal: 12, paddingVertical: 10, fontFamily: 'Inter_500Medium', color: '#F8FAFC', textAlign: 'center' }}
+                      />
                     </View>
                     <View className="flex-1">
                       <Text className="font-sans text-xs text-muted-foreground mb-1">Save</Text>
-                      <View className="bg-background rounded-lg px-3 py-2 flex-row items-center">
-                        <TextInput
-                          value={fixedSavings}
-                          onChangeText={setFixedSavings}
-                          keyboardType="decimal-pad"
-                          placeholder="0"
-                          placeholderTextColor="#64748B"
-                          className="flex-1 font-sans-medium text-foreground text-center"
-                          selectionColor="#3B82F6"
-                        />
-                      </View>
+                      <TextInput
+                        value={fixedSavings}
+                        onChangeText={setFixedSavings}
+                        keyboardType="decimal-pad"
+                        placeholder="0"
+                        placeholderTextColor="#64748B"
+                        selectionColor="#3B82F6"
+                        style={{ backgroundColor: '#0F172A', borderRadius: 8, paddingHorizontal: 12, paddingVertical: 10, fontFamily: 'Inter_500Medium', color: '#F8FAFC', textAlign: 'center' }}
+                      />
                     </View>
                   </View>
                   <Text className="font-sans text-xs text-muted-foreground mb-2">
@@ -334,9 +331,11 @@ export default function SettingsScreen() {
 
               <Pressable
                 onPress={handleSaveCustom}
-                className="bg-primary rounded-lg py-2.5 items-center"
+                className={`rounded-lg py-2.5 items-center ${savedCustom ? 'bg-success' : 'bg-primary'}`}
               >
-                <Text className="font-sans-medium text-sm text-white">Apply</Text>
+                <Text className="font-sans-medium text-sm text-white">
+                  {savedCustom ? 'Saved!' : 'Apply'}
+                </Text>
               </Pressable>
             </View>
           )}

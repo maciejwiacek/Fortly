@@ -9,6 +9,9 @@ import type { FinanceStore } from '../lib/types';
 export const useFinanceStore = create<FinanceStore>()(
   persist(
     (set) => ({
+      isOnboardingComplete: false,
+      completeOnboarding: () => set({ isOnboardingComplete: true }),
+
       monthlyIncome: 0,
       budgetStrategy: BUDGET_STRATEGIES['50-30-20'],
       transactions: [],
@@ -108,10 +111,13 @@ export const useFinanceStore = create<FinanceStore>()(
     {
       name: 'fortly-store',
       storage: createJSONStorage(() => AsyncStorage),
-      version: 3,
+      version: 4,
       migrate: (persistedState: any, version: number) => {
         if (version < 3) {
           persistedState.chatMessages = [];
+        }
+        if (version < 4) {
+          persistedState.isOnboardingComplete = persistedState.monthlyIncome > 0;
         }
         return persistedState;
       },

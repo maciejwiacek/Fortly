@@ -99,6 +99,10 @@ export interface ChatMessage {
 }
 
 export interface FinanceStore {
+  // Onboarding
+  isOnboardingComplete: boolean;
+  completeOnboarding: () => void;
+
   // Config
   monthlyIncome: number; // grosze
   budgetStrategy: BudgetStrategy;

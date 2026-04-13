@@ -7,7 +7,7 @@ import {
   useFonts,
 } from '@expo-google-fonts/inter';
 import { DarkTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
+import { Stack, useRouter, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
@@ -15,11 +15,13 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
 
 import '../global.css';
+import { useFinanceStore } from '../stores/finance-store';
+import { useStoreHydration } from '../hooks/use-store-hydration';
 
 export { ErrorBoundary } from 'expo-router';
 
 export const unstable_settings = {
-  initialRouteName: '(tabs)',
+  initialRouteName: '(onboarding)',
 };
 
 SplashScreen.preventAutoHideAsync();
@@ -46,17 +48,34 @@ export default function RootLayout() {
     Inter_700Bold,
   });
 
+  const router = useRouter();
+  const segments = useSegments();
+  const isOnboardingComplete = useFinanceStore((s) => s.isOnboardingComplete);
+  const hydrated = useStoreHydration();
+
   useEffect(() => {
     if (fontError) throw fontError;
   }, [fontError]);
 
   useEffect(() => {
-    if (fontsLoaded) {
+    if (fontsLoaded && hydrated) {
       SplashScreen.hideAsync();
     }
-  }, [fontsLoaded]);
+  }, [fontsLoaded, hydrated]);
 
-  if (!fontsLoaded) {
+  useEffect(() => {
+    if (!fontsLoaded || !hydrated) return;
+
+    const inOnboarding = segments[0] === '(onboarding)';
+
+    if (isOnboardingComplete && inOnboarding) {
+      router.replace('/(tabs)');
+    } else if (!isOnboardingComplete && !inOnboarding) {
+      router.replace('/(onboarding)');
+    }
+  }, [fontsLoaded, hydrated, isOnboardingComplete, segments]);
+
+  if (!fontsLoaded || !hydrated) {
     return null;
   }
 
@@ -64,7 +83,8 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ThemeProvider value={CustomDarkTheme}>
         <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="(onboarding)" options={{ headerShown: false, animation: 'none' }} />
+          <Stack.Screen name="(tabs)" options={{ headerShown: false, animation: 'none' }} />
           <Stack.Screen
             name="add-transaction"
             options={{
