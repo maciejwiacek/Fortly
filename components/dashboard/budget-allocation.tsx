@@ -4,6 +4,7 @@ import Animated, { useAnimatedProps, useDerivedValue, withTiming } from 'react-n
 import { useBudgetAllocation } from '../../hooks/use-envelope-status';
 import { useMonthlyTransactions } from '../../hooks/use-monthly-transactions';
 import { useFinanceStore } from '../../stores/finance-store';
+import { useThemeColors } from '../../hooks/use-theme-colors';
 import { formatPLN, getCurrentMonthKey, getMonthKey, clamp } from '../../lib/utils';
 import { NEEDS_CATEGORIES, WANTS_CATEGORIES } from '../../lib/types';
 
@@ -14,9 +15,10 @@ interface MiniGaugeProps {
   spent: number;
   budget: number;
   color: string;
+  trackColor: string;
 }
 
-function MiniGauge({ label, spent, budget, color }: MiniGaugeProps) {
+function MiniGauge({ label, spent, budget, color, trackColor }: MiniGaugeProps) {
   const size = 90;
   const strokeWidth = 7;
   const radius = (size - strokeWidth) / 2;
@@ -24,7 +26,6 @@ function MiniGauge({ label, spent, budget, color }: MiniGaugeProps) {
   const ratio = clamp(budget > 0 ? spent / budget : 0, 0, 1);
   const percentage = Math.round(ratio * 100);
 
-  // Color shifts when over 85%
   const fillColor = ratio >= 1 ? '#DC2626' : ratio >= 0.85 ? '#F97316' : color;
 
   const animatedRatio = useDerivedValue(() => withTiming(ratio, { duration: 600 }), [ratio]);
@@ -40,7 +41,7 @@ function MiniGauge({ label, spent, budget, color }: MiniGaugeProps) {
             cx={size / 2}
             cy={size / 2}
             r={radius}
-            stroke="rgba(255,255,255,0.08)"
+            stroke={trackColor}
             strokeWidth={strokeWidth}
             fill="none"
           />
@@ -78,8 +79,8 @@ export function BudgetAllocation() {
   const { needs, wants, savings } = useBudgetAllocation();
   const monthKey = getCurrentMonthKey();
   const transactions = useMonthlyTransactions(monthKey);
+  const colors = useThemeColors();
 
-  // Savings = goal contributions + investments this month
   const goalContributions = useFinanceStore((s) => s.goalContributions);
   const investmentEntries = useFinanceStore((s) => s.investmentEntries);
 
@@ -100,9 +101,9 @@ export function BudgetAllocation() {
   return (
     <View className="bg-card rounded-2xl p-4 mx-4 mb-3">
       <View className="flex-row">
-        <MiniGauge label="Needs" spent={needsSpent} budget={needs} color="#3B82F6" />
-        <MiniGauge label="Wants" spent={wantsSpent} budget={wants} color="#F97316" />
-        <MiniGauge label="Savings" spent={savingsSpent} budget={savings} color="#059669" />
+        <MiniGauge label="Needs" spent={needsSpent} budget={needs} color={colors.primaryLight} trackColor={colors.trackBackground} />
+        <MiniGauge label="Wants" spent={wantsSpent} budget={wants} color={colors.warning} trackColor={colors.trackBackground} />
+        <MiniGauge label="Savings" spent={savingsSpent} budget={savings} color={colors.success} trackColor={colors.trackBackground} />
       </View>
     </View>
   );

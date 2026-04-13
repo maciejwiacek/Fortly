@@ -6,6 +6,7 @@ import Animated, {
   useDerivedValue,
 } from 'react-native-reanimated';
 import { formatPLN, clamp } from '../../lib/utils';
+import { useThemeColors } from '../../hooks/use-theme-colors';
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
@@ -24,6 +25,7 @@ export function EnvelopeGauge({
   size = 160,
   strokeWidth = 12,
 }: EnvelopeGaugeProps) {
+  const colors = useThemeColors();
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const ratio = clamp(limit > 0 ? spent / limit : 0, 0, 1);
@@ -47,7 +49,7 @@ export function EnvelopeGauge({
             cx={size / 2}
             cy={size / 2}
             r={radius}
-            stroke="rgba(255,255,255,0.08)"
+            stroke={colors.trackBackground}
             strokeWidth={strokeWidth}
             fill="none"
           />

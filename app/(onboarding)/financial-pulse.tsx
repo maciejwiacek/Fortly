@@ -82,7 +82,7 @@ export default function FinancialPulseScreen() {
                     width: 44,
                     height: 44,
                     borderRadius: 12,
-                    backgroundColor: isSelected ? '#3B82F620' : 'rgba(255,255,255,0.04)',
+                    backgroundColor: isSelected ? '#2563EB20' : 'transparent',
                     alignItems: 'center',
                     justifyContent: 'center',
                     marginRight: 12,

@@ -3,6 +3,7 @@ import { View, Text, Pressable, Modal, TextInput, ScrollView, Switch } from 'rea
 import { Feather } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { useFinanceStore } from '../../stores/finance-store';
+import { useThemeColors } from '../../hooks/use-theme-colors';
 import { GOAL_COLORS } from '../../lib/constants';
 import { GOAL_ICONS } from '../../lib/goal-icons';
 
@@ -12,6 +13,7 @@ interface CreateGoalSheetProps {
 
 export function CreateGoalSheet({ onClose }: CreateGoalSheetProps) {
   const addGoal = useFinanceStore((s) => s.addGoal);
+  const colors = useThemeColors();
   const [label, setLabel] = useState('');
   const [icon, setIcon] = useState<string>('target');
   const [color, setColor] = useState('#8B5CF6');
@@ -49,7 +51,7 @@ export function CreateGoalSheet({ onClose }: CreateGoalSheetProps) {
               New Goal
             </Text>
             <Pressable onPress={onClose} className="p-2" hitSlop={8}>
-              <Feather name="x" size={20} color="#94A3B8" />
+              <Feather name="x" size={20} color={colors.mutedForeground} />
             </Pressable>
           </View>
 
@@ -62,7 +64,7 @@ export function CreateGoalSheet({ onClose }: CreateGoalSheetProps) {
               value={label}
               onChangeText={setLabel}
               placeholder="e.g. New Car, Vacation, Emergency Fund"
-              placeholderTextColor="#64748B"
+              placeholderTextColor={colors.muted}
               autoFocus
               selectionColor="#3B82F6"
               style={{ backgroundColor: '#0F172A', borderRadius: 12, paddingHorizontal: 16, paddingVertical: 14, fontFamily: 'Inter_500Medium', fontSize: 16, color: '#F8FAFC', marginBottom: 16 }}
@@ -78,7 +80,7 @@ export function CreateGoalSheet({ onClose }: CreateGoalSheetProps) {
                 onChangeText={setTargetText}
                 keyboardType="decimal-pad"
                 placeholder="0"
-                placeholderTextColor="#64748B"
+                placeholderTextColor={colors.muted}
                 selectionColor="#3B82F6"
                 style={{ flex: 1, fontFamily: 'Inter_500Medium', fontSize: 18, color: '#F8FAFC', paddingVertical: 14 }}
               />
@@ -118,7 +120,7 @@ export function CreateGoalSheet({ onClose }: CreateGoalSheetProps) {
                     borderRadius: 12,
                     alignItems: 'center',
                     justifyContent: 'center',
-                    backgroundColor: icon === iconName ? color + '30' : 'rgba(255,255,255,0.04)',
+                    backgroundColor: icon === iconName ? color + '30' : colors.background,
                     borderWidth: icon === iconName ? 1.5 : 0,
                     borderColor: icon === iconName ? color : 'transparent',
                   }}

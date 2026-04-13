@@ -12,6 +12,7 @@ import { Feather } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { useFinanceStore } from '../../stores/finance-store';
 import { usePortfolioValue } from '../../hooks/use-portfolio-value';
+import { useThemeColors } from '../../hooks/use-theme-colors';
 import { formatPLN, getTodayStr } from '../../lib/utils';
 import { TICKER_PRESETS } from '../../lib/constants';
 
@@ -19,6 +20,7 @@ import { TICKER_PRESETS } from '../../lib/constants';
 
 export function DashboardHoldings() {
   const portfolio = usePortfolioValue();
+  const colors = useThemeColors();
 
   if (portfolio.holdings.length === 0) return null;
 
@@ -26,7 +28,7 @@ export function DashboardHoldings() {
     <View className="bg-card rounded-2xl p-4 mx-4 mb-3">
       <View className="flex-row items-center justify-between mb-3">
         <View className="flex-row items-center">
-          <Feather name="trending-up" size={14} color="#94A3B8" />
+          <Feather name="trending-up" size={14} color={colors.mutedForeground} />
           <Text className="font-sans-medium text-xs text-muted-foreground ml-1.5">
             Live Holdings
           </Text>
@@ -42,7 +44,7 @@ export function DashboardHoldings() {
           <View
             key={holding.ticker}
             className="flex-row items-center py-2"
-            style={{ borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.05)' }}
+            style={{ borderBottomWidth: 1, borderBottomColor: colors.border }}
           >
             <View className="flex-1">
               <Text className="font-sans-semibold text-sm text-foreground">
@@ -83,6 +85,7 @@ export function InvestmentSection() {
   const investmentEntries = useFinanceStore((s) => s.investmentEntries);
   const deleteInvestment = useFinanceStore((s) => s.deleteInvestment);
   const portfolio = usePortfolioValue();
+  const colors = useThemeColors();
   const [showAdd, setShowAdd] = useState(false);
 
   const totalInvested = investmentEntries.reduce((sum, e) => sum + e.amount, 0);
@@ -92,7 +95,7 @@ export function InvestmentSection() {
       {/* Header */}
       <View className="flex-row items-center justify-between mb-3">
         <View className="flex-row items-center">
-          <Feather name="trending-up" size={16} color="#94A3B8" />
+          <Feather name="trending-up" size={16} color={colors.mutedForeground} />
           <Text className="font-sans-medium text-xs text-muted-foreground ml-2">
             Investments
           </Text>
@@ -107,7 +110,7 @@ export function InvestmentSection() {
             className="p-1.5"
             hitSlop={8}
           >
-            <Feather name="refresh-cw" size={14} color="#94A3B8" />
+            <Feather name="refresh-cw" size={14} color={colors.mutedForeground} />
           </Pressable>
           <Pressable
             onPress={() => setShowAdd(true)}
@@ -140,7 +143,7 @@ export function InvestmentSection() {
                 <View
                   key={holding.ticker}
                   className="flex-row items-center py-2.5"
-                  style={{ borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.05)' }}
+                  style={{ borderBottomWidth: 1, borderBottomColor: colors.border }}
                 >
                   <View className="flex-1">
                     <View className="flex-row items-center">
@@ -214,7 +217,7 @@ export function InvestmentSection() {
             className="p-1"
             hitSlop={8}
           >
-            <Feather name="trash-2" size={14} color="#94A3B8" />
+            <Feather name="trash-2" size={14} color={colors.mutedForeground} />
           </Pressable>
         </View>
       ))}
@@ -236,6 +239,7 @@ export function InvestmentSection() {
 
 function AddInvestmentModal({ onClose }: { onClose: () => void }) {
   const addInvestment = useFinanceStore((s) => s.addInvestment);
+  const colors = useThemeColors();
   const [label, setLabel] = useState('');
   const [ticker, setTicker] = useState('');
   const [amountText, setAmountText] = useState('');
@@ -276,7 +280,7 @@ function AddInvestmentModal({ onClose }: { onClose: () => void }) {
           <View className="flex-row items-center justify-between mb-4">
             <Text className="font-sans-semibold text-lg text-foreground">Log Investment</Text>
             <Pressable onPress={onClose} className="p-2" hitSlop={8}>
-              <Feather name="x" size={20} color="#94A3B8" />
+              <Feather name="x" size={20} color={colors.mutedForeground} />
             </Pressable>
           </View>
 
@@ -315,7 +319,7 @@ function AddInvestmentModal({ onClose }: { onClose: () => void }) {
               value={ticker}
               onChangeText={setTicker}
               placeholder="Or type ticker (VOO, BTC-USD...)"
-              placeholderTextColor="#64748B"
+              placeholderTextColor={colors.muted}
               autoCapitalize="characters"
               className="bg-background rounded-xl px-4 py-3 font-sans-medium text-base text-foreground mb-3"
               selectionColor="#3B82F6"
@@ -326,7 +330,7 @@ function AddInvestmentModal({ onClose }: { onClose: () => void }) {
               value={label}
               onChangeText={setLabel}
               placeholder="Name (e.g. S&P 500 via XTB)"
-              placeholderTextColor="#64748B"
+              placeholderTextColor={colors.muted}
               className="bg-background rounded-xl px-4 py-3 font-sans-medium text-base text-foreground mb-3"
               selectionColor="#3B82F6"
             />
@@ -341,7 +345,7 @@ function AddInvestmentModal({ onClose }: { onClose: () => void }) {
                 onChangeText={setAmountText}
                 keyboardType="decimal-pad"
                 placeholder="e.g. 2500"
-                placeholderTextColor="#64748B"
+                placeholderTextColor={colors.muted}
                 className="flex-1 font-sans-medium text-xl text-foreground"
                 selectionColor="#3B82F6"
               />
@@ -353,7 +357,7 @@ function AddInvestmentModal({ onClose }: { onClose: () => void }) {
               value={note}
               onChangeText={setNote}
               placeholder="Note (optional)"
-              placeholderTextColor="#64748B"
+              placeholderTextColor={colors.muted}
               className="bg-background rounded-xl px-4 py-3 font-sans text-sm text-foreground mb-2"
               selectionColor="#3B82F6"
             />

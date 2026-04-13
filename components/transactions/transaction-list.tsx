@@ -39,7 +39,7 @@ export function TransactionList({ transactions }: TransactionListProps) {
           No transactions yet
         </Text>
         <Text className="font-sans text-xs text-muted-foreground mt-1">
-          Tap the orange + button to add one
+          Tap + to add one
         </Text>
       </View>
     );

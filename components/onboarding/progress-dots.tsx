@@ -15,7 +15,7 @@ export function ProgressDots({ step, total }: ProgressDotsProps) {
             width: i + 1 === step ? 24 : 8,
             height: 8,
             borderRadius: 4,
-            backgroundColor: i + 1 === step ? '#3B82F6' : 'rgba(255,255,255,0.15)',
+            backgroundColor: i + 1 === step ? '#2563EB' : '#94A3B830',
           }}
         />
       ))}

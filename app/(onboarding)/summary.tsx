@@ -5,6 +5,7 @@ import * as Haptics from 'expo-haptics';
 import { OnboardingScreen } from '../../components/onboarding/onboarding-screen';
 import { ContinueButton } from '../../components/onboarding/continue-button';
 import { useFinanceStore } from '../../stores/finance-store';
+import { useThemeColors } from '../../hooks/use-theme-colors';
 import { formatPLN } from '../../lib/utils';
 
 const STRATEGY_NAMES: Record<string, string> = {
@@ -16,6 +17,7 @@ const STRATEGY_NAMES: Record<string, string> = {
 
 export default function SummaryScreen() {
   const router = useRouter();
+  const colors = useThemeColors();
   const monthlyIncome = useFinanceStore((s) => s.monthlyIncome);
   const budgetStrategy = useFinanceStore((s) => s.budgetStrategy);
   const goals = useFinanceStore((s) => s.goals);
@@ -42,11 +44,11 @@ export default function SummaryScreen() {
         <Pressable
           onPress={() => router.navigate('/(onboarding)/income')}
           className="bg-card rounded-2xl p-4"
-          style={{ borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)' }}
+          style={{ borderWidth: 1, borderColor: colors.border }}
         >
           <View className="flex-row items-center justify-between mb-2">
             <Text className="font-sans-medium text-sm text-muted-foreground">Monthly Income</Text>
-            <Feather name="edit-2" size={16} color="#94A3B8" />
+            <Feather name="edit-2" size={16} color={colors.mutedForeground} />
           </View>
           <Text className="font-sans-bold text-2xl text-foreground">
             {formatPLN(monthlyIncome)}
@@ -57,11 +59,11 @@ export default function SummaryScreen() {
         <Pressable
           onPress={() => router.navigate('/(onboarding)/budget-strategy')}
           className="bg-card rounded-2xl p-4"
-          style={{ borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)' }}
+          style={{ borderWidth: 1, borderColor: colors.border }}
         >
           <View className="flex-row items-center justify-between mb-2">
             <Text className="font-sans-medium text-sm text-muted-foreground">Budget Strategy</Text>
-            <Feather name="edit-2" size={16} color="#94A3B8" />
+            <Feather name="edit-2" size={16} color={colors.mutedForeground} />
           </View>
           <Text className="font-sans-semibold text-lg text-foreground mb-3">
             {STRATEGY_NAMES[budgetStrategy.type] || budgetStrategy.type}
@@ -98,11 +100,11 @@ export default function SummaryScreen() {
         <Pressable
           onPress={() => router.navigate('/(onboarding)/first-goal')}
           className="bg-card rounded-2xl p-4"
-          style={{ borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)' }}
+          style={{ borderWidth: 1, borderColor: colors.border }}
         >
           <View className="flex-row items-center justify-between mb-2">
             <Text className="font-sans-medium text-sm text-muted-foreground">First Goal</Text>
-            <Feather name="edit-2" size={16} color="#94A3B8" />
+            <Feather name="edit-2" size={16} color={colors.mutedForeground} />
           </View>
           {firstGoal ? (
             <View className="flex-row items-center">

@@ -6,12 +6,14 @@ import * as Haptics from 'expo-haptics';
 import { OnboardingScreen } from '../../components/onboarding/onboarding-screen';
 import { ContinueButton } from '../../components/onboarding/continue-button';
 import { useFinanceStore } from '../../stores/finance-store';
+import { useThemeColors } from '../../hooks/use-theme-colors';
 
 const ICON_SUBSET = ['home', 'monitor', 'truck', 'briefcase', 'star', 'heart', 'target', 'gift'] as const;
 const COLOR_SUBSET = ['#F43F5E', '#8B5CF6', '#06B6D4', '#F97316', '#10B981', '#6366F1'];
 
 export default function FirstGoalScreen() {
   const router = useRouter();
+  const colors = useThemeColors();
   const addGoal = useFinanceStore((s) => s.addGoal);
 
   const [label, setLabel] = useState('');
@@ -67,7 +69,7 @@ export default function FirstGoalScreen() {
             value={label}
             onChangeText={setLabel}
             placeholder="e.g. New Car, Vacation, Emergency Fund"
-            placeholderTextColor="#64748B"
+            placeholderTextColor={colors.muted}
             selectionColor="#3B82F6"
             style={{ backgroundColor: '#192134', borderRadius: 12, paddingHorizontal: 16, paddingVertical: 14, fontFamily: 'Inter_500Medium', fontSize: 16, color: '#F8FAFC' }}
           />
@@ -82,7 +84,7 @@ export default function FirstGoalScreen() {
               onChangeText={setTargetText}
               keyboardType="decimal-pad"
               placeholder="0"
-              placeholderTextColor="#64748B"
+              placeholderTextColor={colors.muted}
               selectionColor="#3B82F6"
               style={{ flex: 1, fontFamily: 'Inter_500Medium', fontSize: 18, color: '#F8FAFC', paddingVertical: 14 }}
             />
@@ -120,7 +122,7 @@ export default function FirstGoalScreen() {
                   borderRadius: 14,
                   alignItems: 'center',
                   justifyContent: 'center',
-                  backgroundColor: icon === iconName ? color + '30' : 'rgba(255,255,255,0.04)',
+                  backgroundColor: icon === iconName ? color + '30' : colors.background,
                   borderWidth: icon === iconName ? 1.5 : 0,
                   borderColor: icon === iconName ? color : 'transparent',
                 }}

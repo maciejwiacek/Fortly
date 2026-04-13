@@ -19,6 +19,7 @@ import { buildFinancialContext } from '../../lib/ai-context';
 import { chatWithAI } from '../../lib/gemini-api';
 import type { ChatMessage as ChatMessageType } from '../../lib/types';
 import { useFinanceStore } from '../../stores/finance-store';
+import { useThemeColors } from '../../hooks/use-theme-colors';
 
 function useKeyboardHeight() {
   const height = useRef(new Animated.Value(0)).current;
@@ -55,6 +56,7 @@ export default function AdvisorScreen() {
   const addChatMessage = useFinanceStore((s) => s.addChatMessage);
   const clearChat = useFinanceStore((s) => s.clearChat);
 
+  const colors = useThemeColors();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const listRef = useRef<FlatList<ChatMessageType>>(null);
@@ -169,7 +171,7 @@ export default function AdvisorScreen() {
         </View>
         {chatMessages.length > 0 && (
           <Pressable onPress={handleClear} className="p-2">
-            <Feather name="trash-2" size={20} color="#94A3B8" />
+            <Feather name="trash-2" size={20} color={colors.mutedForeground} />
           </Pressable>
         )}
       </View>

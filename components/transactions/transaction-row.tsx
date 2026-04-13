@@ -5,6 +5,7 @@ import type { Transaction } from '../../lib/types';
 import { CATEGORIES } from '../../lib/constants';
 import { formatPLN } from '../../lib/utils';
 import { useFinanceStore } from '../../stores/finance-store';
+import { useThemeColors } from '../../hooks/use-theme-colors';
 
 const ICON_MAP: Record<string, string> = {
   UtensilsCrossed: 'coffee',
@@ -26,6 +27,7 @@ interface TransactionRowProps {
 
 export function TransactionRow({ transaction }: TransactionRowProps) {
   const deleteTransaction = useFinanceStore((s) => s.deleteTransaction);
+  const colors = useThemeColors();
   const cat = CATEGORIES.find((c) => c.value === transaction.category);
   const iconName = cat ? (ICON_MAP[cat.icon] ?? 'circle') : 'circle';
 
@@ -41,13 +43,13 @@ export function TransactionRow({ transaction }: TransactionRowProps) {
           width: 40,
           height: 40,
           borderRadius: 12,
-          backgroundColor: '#192134',
+          backgroundColor: colors.card,
           alignItems: 'center',
           justifyContent: 'center',
           marginRight: 12,
         }}
       >
-        <Feather name={iconName as any} size={20} color="#94A3B8" />
+        <Feather name={iconName as any} size={20} color={colors.mutedForeground} />
       </View>
       <View className="flex-1">
         <Text className="font-sans-medium text-sm text-foreground">
@@ -67,7 +69,7 @@ export function TransactionRow({ transaction }: TransactionRowProps) {
         -{formatPLN(transaction.amount)}
       </Text>
       <Pressable onPress={handleDelete} className="ml-3 p-2" hitSlop={8}>
-        <Feather name="trash-2" size={16} color="#DC2626" />
+        <Feather name="trash-2" size={16} color={colors.destructive} />
       </Pressable>
     </View>
   );

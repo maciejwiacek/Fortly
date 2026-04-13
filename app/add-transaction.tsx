@@ -17,6 +17,7 @@ import * as Haptics from 'expo-haptics';
 import { AmountInput } from '../components/transactions/amount-input';
 import { CategoryPicker } from '../components/transactions/category-picker';
 import { useFinanceStore } from '../stores/finance-store';
+import { useThemeColors } from '../hooks/use-theme-colors';
 import { CATEGORIES, TICKER_PRESETS } from '../lib/constants';
 import { getTodayStr, formatPLN } from '../lib/utils';
 import type { TransactionCategory } from '../lib/types';
@@ -25,6 +26,7 @@ type AddMode = 'expense' | 'goal' | 'investment';
 
 export default function AddTransactionScreen() {
   const router = useRouter();
+  const colors = useThemeColors();
   const addTransaction = useFinanceStore((s) => s.addTransaction);
   const addGoalContribution = useFinanceStore((s) => s.addGoalContribution);
   const addInvestment = useFinanceStore((s) => s.addInvestment);
@@ -83,7 +85,7 @@ export default function AddTransactionScreen() {
         <View className="flex-row items-center justify-between px-4 py-3">
           <Text className="font-sans-semibold text-lg text-foreground">Add</Text>
           <Pressable onPress={() => router.back()} className="p-2" hitSlop={8}>
-            <Feather name="x" size={24} color="#94A3B8" />
+            <Feather name="x" size={24} color={colors.mutedForeground} />
           </Pressable>
         </View>
 
@@ -121,7 +123,7 @@ export default function AddTransactionScreen() {
                   <Text className="font-sans-medium text-sm text-foreground">
                     {date === getTodayStr() ? 'Dzisiaj' : date}
                   </Text>
-                  <Feather name="chevron-down" size={14} color="#94A3B8" style={{ marginLeft: 4 }} />
+                  <Feather name="chevron-down" size={14} color={colors.mutedForeground} style={{ marginLeft: 4 }} />
                 </View>
               </View>
               <View className="px-2 mb-4">
@@ -140,7 +142,7 @@ export default function AddTransactionScreen() {
                 <Switch
                   value={isEnvelope}
                   onValueChange={setIsEnvelope}
-                  trackColor={{ false: '#1E293B', true: '#059669' }}
+                  trackColor={{ false: colors.border, true: colors.success }}
                   thumbColor="#FFFFFF"
                 />
               </View>
@@ -166,7 +168,7 @@ export default function AddTransactionScreen() {
                     onPress={() => setSelectedGoalId(goal.id)}
                     className={`rounded-xl p-4 mb-2 flex-row items-center`}
                     style={{
-                      backgroundColor: selectedGoalId === goal.id ? goal.color + '20' : '#192134',
+                      backgroundColor: selectedGoalId === goal.id ? goal.color + '20' : colors.card,
                       borderWidth: 1.5,
                       borderColor: selectedGoalId === goal.id ? goal.color : 'transparent',
                     }}
@@ -231,27 +233,27 @@ export default function AddTransactionScreen() {
                 value={investTicker}
                 onChangeText={setInvestTicker}
                 placeholder="Or type ticker (VOO, BTC-USD...)"
-                placeholderTextColor="#64748B"
+                placeholderTextColor={colors.muted}
                 autoCapitalize="characters"
                 className="bg-card rounded-xl px-4 py-3 font-sans-medium text-base text-foreground mb-3"
-                selectionColor="#3B82F6"
+                selectionColor={colors.primaryLight}
               />
 
               <TextInput
                 value={investLabel}
                 onChangeText={setInvestLabel}
                 placeholder="Investment name"
-                placeholderTextColor="#64748B"
+                placeholderTextColor={colors.muted}
                 className="bg-card rounded-xl px-4 py-3 font-sans-medium text-base text-foreground mb-3"
-                selectionColor="#3B82F6"
+                selectionColor={colors.primaryLight}
               />
               <TextInput
                 value={investNote}
                 onChangeText={setInvestNote}
                 placeholder="Note (optional)"
-                placeholderTextColor="#64748B"
+                placeholderTextColor={colors.muted}
                 className="bg-card rounded-xl px-4 py-3 font-sans text-sm text-foreground"
-                selectionColor="#3B82F6"
+                selectionColor={colors.primaryLight}
               />
             </View>
           )}

@@ -8,6 +8,7 @@ import { PageHeader } from '../../components/layout/page-header';
 import { TransactionList } from '../../components/transactions/transaction-list';
 import { SpendingCalendar } from '../../components/transactions/spending-calendar';
 import { useMonthlyTransactions } from '../../hooks/use-monthly-transactions';
+import { useThemeColors } from '../../hooks/use-theme-colors';
 import { formatMonthDisplay, formatPLN, formatDateGroup } from '../../lib/utils';
 
 export default function TransactionsScreen() {
@@ -24,6 +25,7 @@ export default function TransactionsScreen() {
   }, [allTransactions, selectedDate]);
 
   const totalSpent = transactions.reduce((sum, t) => sum + t.amount, 0);
+  const colors = useThemeColors();
 
   const handleDateSelect = (date: string | null) => {
     Haptics.selectionAsync();
@@ -42,9 +44,9 @@ export default function TransactionsScreen() {
           className="p-2 bg-card rounded-lg"
         >
           {showCalendar ? (
-            <Feather name="list" size={18} color="#94A3B8" />
+            <Feather name="list" size={18} color={colors.mutedForeground} />
           ) : (
-            <Feather name="calendar" size={18} color="#94A3B8" />
+            <Feather name="calendar" size={18} color={colors.mutedForeground} />
           )}
         </Pressable>
       </View>
@@ -59,7 +61,7 @@ export default function TransactionsScreen() {
           className="p-2"
           hitSlop={8}
         >
-          <Feather name="chevron-left" size={20} color="#94A3B8" />
+          <Feather name="chevron-left" size={20} color={colors.mutedForeground} />
         </Pressable>
         <Text className="font-sans-medium text-sm text-foreground capitalize">
           {formatMonthDisplay(monthKey)}
@@ -72,7 +74,7 @@ export default function TransactionsScreen() {
           className="p-2"
           hitSlop={8}
         >
-          <Feather name="chevron-right" size={20} color="#94A3B8" />
+          <Feather name="chevron-right" size={20} color={colors.mutedForeground} />
         </Pressable>
       </View>
 

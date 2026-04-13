@@ -32,12 +32,12 @@ const LightNavTheme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
-    background: '#F8F9FB',
-    card: '#FFFFFF',
-    text: '#0F172A',
-    border: '#E2E8F0',
+    background: '#FFFFFF',
+    card: '#F7F7F8',
+    text: '#0A0A0A',
+    border: '#EBEBEB',
     primary: '#2563EB',
-    notification: '#F97316',
+    notification: '#EA580C',
   },
 };
 
@@ -45,12 +45,12 @@ const DarkNavTheme = {
   ...DarkTheme,
   colors: {
     ...DarkTheme.colors,
-    background: '#0F172A',
-    card: '#192134',
-    text: '#F8FAFC',
-    border: 'rgba(255,255,255,0.08)',
+    background: '#0A0A0A',
+    card: '#171717',
+    text: '#FAFAFA',
+    border: '#262626',
     primary: '#3B82F6',
-    notification: '#F97316',
+    notification: '#FB923C',
   },
 };
 

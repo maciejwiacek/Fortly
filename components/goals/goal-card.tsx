@@ -7,6 +7,7 @@ import * as Haptics from 'expo-haptics';
 import type { GoalProgress } from '../../hooks/use-goal-progress';
 import { formatPLN, clamp } from '../../lib/utils';
 import { useFinanceStore } from '../../stores/finance-store';
+import { useThemeColors } from '../../hooks/use-theme-colors';
 import { GoalContributeSheet } from './goal-contribute-sheet';
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
@@ -26,6 +27,7 @@ function getMilestoneLabel(pct: number): string {
 export function GoalCard({ goal }: GoalCardProps) {
   const [showContribute, setShowContribute] = useState(false);
   const deleteGoal = useFinanceStore((s) => s.deleteGoal);
+  const colors = useThemeColors();
 
   const gaugeSize = 100;
   const strokeWidth = 8;
@@ -63,7 +65,7 @@ export function GoalCard({ goal }: GoalCardProps) {
     <>
       <View
         className="rounded-2xl p-4 mx-4 mb-3"
-        style={{ backgroundColor: bgTint, borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)' }}
+        style={{ backgroundColor: bgTint, borderWidth: 1, borderColor: colors.border }}
       >
         <View className="flex-row items-center">
           {/* Circular gauge */}
@@ -73,7 +75,7 @@ export function GoalCard({ goal }: GoalCardProps) {
                 cx={gaugeSize / 2}
                 cy={gaugeSize / 2}
                 r={radius}
-                stroke="rgba(255,255,255,0.08)"
+                stroke={colors.trackBackground}
                 strokeWidth={strokeWidth}
                 fill="none"
               />
@@ -112,7 +114,7 @@ export function GoalCard({ goal }: GoalCardProps) {
                 {goal.label}
               </Text>
               <Pressable onPress={handleDelete} className="p-1.5" hitSlop={8}>
-                <Feather name="trash-2" size={14} color="#94A3B8" />
+                <Feather name="trash-2" size={14} color={colors.mutedForeground} />
               </Pressable>
             </View>
 

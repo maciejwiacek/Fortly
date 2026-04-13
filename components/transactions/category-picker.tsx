@@ -2,6 +2,7 @@ import { View, Text, Pressable } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import type { TransactionCategory } from '../../lib/types';
 import { CATEGORIES } from '../../lib/constants';
+import { useThemeColors } from '../../hooks/use-theme-colors';
 
 const ICON_MAP: Record<string, string> = {
   UtensilsCrossed: 'coffee',
@@ -23,6 +24,8 @@ interface CategoryPickerProps {
 }
 
 export function CategoryPicker({ selected, onSelect }: CategoryPickerProps) {
+  const colors = useThemeColors();
+
   return (
     <View className="flex-row flex-wrap justify-between px-2">
       {CATEGORIES.map((cat) => {
@@ -43,15 +46,15 @@ export function CategoryPicker({ selected, onSelect }: CategoryPickerProps) {
                 borderRadius: 16,
                 alignItems: 'center',
                 justifyContent: 'center',
-                backgroundColor: isSelected ? '#3B82F6' : '#192134',
+                backgroundColor: isSelected ? colors.primaryLight : colors.card,
                 borderWidth: isSelected ? 0 : 1,
-                borderColor: 'rgba(255,255,255,0.08)',
+                borderColor: colors.border,
               }}
             >
               <Feather
                 name={iconName as any}
                 size={24}
-                color={isSelected ? '#FFFFFF' : '#94A3B8'}
+                color={isSelected ? '#FFFFFF' : colors.mutedForeground}
               />
             </View>
             <Text
@@ -59,7 +62,7 @@ export function CategoryPicker({ selected, onSelect }: CategoryPickerProps) {
                 fontFamily: 'Inter_400Regular',
                 fontSize: 12,
                 marginTop: 4,
-                color: isSelected ? '#3B82F6' : '#94A3B8',
+                color: isSelected ? colors.primaryLight : colors.mutedForeground,
               }}
             >
               {cat.label}
