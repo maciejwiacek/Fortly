@@ -14,13 +14,13 @@ export default function DashboardScreen() {
   return (
     <SafeAreaView className="flex-1 bg-background" edges={['top']}>
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
-        <PageHeader title="Dashboard" subtitle={formatMonthDisplay(monthKey)} />
+        <PageHeader greeting showSettings subtitle={formatMonthDisplay(monthKey)} title="Dashboard" />
         <SpendingSummaryCard />
         <AIInsightCard />
         <BudgetAllocation />
         <DashboardHoldings />
         <GoalsSummary />
-        <SafeAreaView edges={['bottom']} style={{ height: 100 }} />
+        <SafeAreaView edges={['bottom']} style={{ height: 120 }} />
       </ScrollView>
     </SafeAreaView>
   );

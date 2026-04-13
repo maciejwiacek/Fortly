@@ -28,7 +28,7 @@ function useKeyboardHeight() {
       Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
       (e) => {
         Animated.timing(height, {
-          toValue: e.endCoordinates.height - 85,
+          toValue: e.endCoordinates.height,
           duration: e.duration || 250,
           useNativeDriver: false,
         }).start();

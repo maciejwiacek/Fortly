@@ -64,23 +64,23 @@ export function CreateGoalSheet({ onClose }: CreateGoalSheetProps) {
               placeholder="e.g. New Car, Vacation, Emergency Fund"
               placeholderTextColor="#64748B"
               autoFocus
-              className="bg-background rounded-xl px-4 py-3 font-sans-medium text-base text-foreground mb-4"
               selectionColor="#3B82F6"
+              style={{ backgroundColor: '#0F172A', borderRadius: 12, paddingHorizontal: 16, paddingVertical: 14, fontFamily: 'Inter_500Medium', fontSize: 16, color: '#F8FAFC', marginBottom: 16 }}
             />
 
             {/* Target Amount */}
             <Text className="font-sans-medium text-sm text-muted-foreground mb-2">
               Target Amount (PLN)
             </Text>
-            <View className="bg-background rounded-xl px-4 py-3 flex-row items-center mb-4">
+            <View className="bg-background rounded-xl px-4 flex-row items-center mb-4" style={{ minHeight: 52 }}>
               <TextInput
                 value={targetText}
                 onChangeText={setTargetText}
                 keyboardType="decimal-pad"
                 placeholder="0"
                 placeholderTextColor="#64748B"
-                className="flex-1 font-sans-medium text-lg text-foreground"
                 selectionColor="#3B82F6"
+                style={{ flex: 1, fontFamily: 'Inter_500Medium', fontSize: 18, color: '#F8FAFC', paddingVertical: 14 }}
               />
               <Text className="font-sans text-lg text-muted-foreground ml-2">zl</Text>
             </View>

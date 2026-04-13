@@ -1,11 +1,14 @@
 import { useState } from 'react';
 import { View, Text, TextInput, Pressable, Alert, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
+import { Feather } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
-import { PageHeader } from '../../components/layout/page-header';
-import { useFinanceStore } from '../../stores/finance-store';
-import { formatPLN } from '../../lib/utils';
-import { BUDGET_STRATEGIES, type BudgetStrategy, type BudgetStrategyType, type CustomMode } from '../../lib/types';
+import { useFinanceStore } from '../stores/finance-store';
+import { formatPLN } from '../lib/utils';
+import { BUDGET_STRATEGIES, type BudgetStrategyType, type CustomMode, type ThemePreference } from '../lib/types';
+import { useTheme } from '../hooks/use-theme';
+import { useThemeColors } from '../hooks/use-theme-colors';
 
 const STRATEGY_INFO: Record<BudgetStrategyType, { name: string; description: string }> = {
   '50-30-20': {
@@ -26,11 +29,21 @@ const STRATEGY_INFO: Record<BudgetStrategyType, { name: string; description: str
   },
 };
 
+const THEME_OPTIONS: { value: ThemePreference; label: string; icon: string }[] = [
+  { value: 'system', label: 'System', icon: 'smartphone' },
+  { value: 'light', label: 'Light', icon: 'sun' },
+  { value: 'dark', label: 'Dark', icon: 'moon' },
+];
+
 export default function SettingsScreen() {
+  const router = useRouter();
+  const colors = useThemeColors();
+  const { themePreference } = useTheme();
   const monthlyIncome = useFinanceStore((s) => s.monthlyIncome);
   const budgetStrategy = useFinanceStore((s) => s.budgetStrategy);
   const setBudgetStrategy = useFinanceStore((s) => s.setBudgetStrategy);
   const setMonthlyIncome = useFinanceStore((s) => s.setMonthlyIncome);
+  const setThemePreference = useFinanceStore((s) => s.setThemePreference);
 
   const [incomeText, setIncomeText] = useState((monthlyIncome / 100).toFixed(0));
   const [customNeeds, setCustomNeeds] = useState(String(budgetStrategy.needs));
@@ -88,10 +101,8 @@ export default function SettingsScreen() {
       setBudgetStrategy({
         type: 'custom',
         customMode: 'fixed',
-        needs: 0, wants: 0, savings: 0, // percentages unused in fixed mode
-        fixedNeeds: fn,
-        fixedWants: fw,
-        fixedSavings: fs,
+        needs: 0, wants: 0, savings: 0,
+        fixedNeeds: fn, fixedWants: fw, fixedSavings: fs,
       });
     }
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
@@ -104,7 +115,7 @@ export default function SettingsScreen() {
   const handleReset = () => {
     Alert.alert(
       'Reset All Data',
-      'This will delete all transactions, goals, contributions, and investments. Cannot be undone.',
+      'This will delete all your data and return you to the setup screen. Cannot be undone.',
       [
         { text: 'Cancel', style: 'cancel' },
         {
@@ -112,9 +123,14 @@ export default function SettingsScreen() {
           style: 'destructive',
           onPress: () => {
             useFinanceStore.setState({
+              isOnboardingComplete: false,
+              monthlyIncome: 0,
+              budgetStrategy: BUDGET_STRATEGIES['50-30-20'],
               transactions: [],
+              goals: [],
               goalContributions: [],
               investmentEntries: [],
+              chatMessages: [],
             });
             Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
           },
@@ -126,9 +142,48 @@ export default function SettingsScreen() {
   return (
     <SafeAreaView className="flex-1 bg-background" edges={['top']}>
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
-        <PageHeader title="Settings" subtitle="Customize your tracker" />
+        {/* Header with back button */}
+        <View className="flex-row items-center px-4 pt-4 pb-2">
+          <Pressable onPress={() => router.back()} className="p-2 -ml-2 mr-2" hitSlop={8}>
+            <Feather name="arrow-left" size={24} color={colors.foreground} />
+          </Pressable>
+          <Text className="font-sans-bold text-2xl text-foreground">Settings</Text>
+        </View>
 
         <View className="px-4 mt-2">
+          {/* Theme Preference */}
+          <Text className="font-sans-semibold text-sm text-foreground mb-2">
+            Appearance
+          </Text>
+          <View className="flex-row gap-2 mb-6">
+            {THEME_OPTIONS.map((option) => {
+              const isSelected = themePreference === option.value;
+              return (
+                <Pressable
+                  key={option.value}
+                  onPress={() => { setThemePreference(option.value); Haptics.selectionAsync(); }}
+                  className={`flex-1 rounded-xl py-3 items-center ${isSelected ? '' : 'bg-card'}`}
+                  style={
+                    isSelected
+                      ? { backgroundColor: colors.primary + '18', borderWidth: 1.5, borderColor: colors.primary }
+                      : { borderWidth: 1.5, borderColor: 'transparent' }
+                  }
+                >
+                  <Feather
+                    name={option.icon as any}
+                    size={18}
+                    color={isSelected ? colors.primary : colors.mutedForeground}
+                  />
+                  <Text
+                    className={`font-sans-medium text-xs mt-1 ${isSelected ? 'text-primary' : 'text-muted-foreground'}`}
+                  >
+                    {option.label}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </View>
+
           {/* Monthly Income */}
           <Text className="font-sans-semibold text-sm text-foreground mb-2">
             Monthly Net Income
@@ -138,9 +193,9 @@ export default function SettingsScreen() {
               value={incomeText}
               onChangeText={setIncomeText}
               keyboardType="decimal-pad"
-              placeholderTextColor="#64748B"
-              selectionColor="#3B82F6"
-              style={{ flex: 1, fontFamily: 'Inter_500Medium', fontSize: 18, color: '#F8FAFC', paddingVertical: 14 }}
+              placeholderTextColor={colors.muted}
+              selectionColor={colors.primaryLight}
+              style={{ flex: 1, fontFamily: 'Inter_500Medium', fontSize: 18, color: colors.foreground, paddingVertical: 14 }}
             />
             <Text className="font-sans text-lg text-muted-foreground">zl</Text>
           </View>
@@ -173,7 +228,7 @@ export default function SettingsScreen() {
                 className={`rounded-xl p-4 mb-2 ${isSelected ? '' : 'bg-card'}`}
                 style={
                   isSelected
-                    ? { backgroundColor: '#1E40AF20', borderWidth: 1.5, borderColor: '#3B82F6' }
+                    ? { backgroundColor: colors.primary + '18', borderWidth: 1.5, borderColor: colors.primary }
                     : { borderWidth: 1.5, borderColor: 'transparent' }
                 }
               >
@@ -218,7 +273,6 @@ export default function SettingsScreen() {
           {/* Custom strategy inputs */}
           {budgetStrategy.type === 'custom' && (
             <View className="bg-card rounded-xl p-4 mb-2">
-              {/* Mode toggle: percentage vs fixed PLN */}
               <View className="flex-row bg-background rounded-lg p-1 mb-4">
                 <Pressable
                   onPress={() => { setCustomMode('percentage'); Haptics.selectionAsync(); }}
@@ -244,36 +298,20 @@ export default function SettingsScreen() {
                     Split by % (must add to 100)
                   </Text>
                   <View className="flex-row gap-2 mb-3">
-                    <View className="flex-1">
-                      <Text className="font-sans text-xs text-muted-foreground mb-1">Needs %</Text>
-                      <TextInput
-                        value={customNeeds}
-                        onChangeText={setCustomNeeds}
-                        keyboardType="number-pad"
-                        selectionColor="#3B82F6"
-                        style={{ backgroundColor: '#0F172A', borderRadius: 8, paddingHorizontal: 12, paddingVertical: 10, fontFamily: 'Inter_500Medium', color: '#F8FAFC', textAlign: 'center' }}
-                      />
-                    </View>
-                    <View className="flex-1">
-                      <Text className="font-sans text-xs text-muted-foreground mb-1">Wants %</Text>
-                      <TextInput
-                        value={customWants}
-                        onChangeText={setCustomWants}
-                        keyboardType="number-pad"
-                        selectionColor="#3B82F6"
-                        style={{ backgroundColor: '#0F172A', borderRadius: 8, paddingHorizontal: 12, paddingVertical: 10, fontFamily: 'Inter_500Medium', color: '#F8FAFC', textAlign: 'center' }}
-                      />
-                    </View>
-                    <View className="flex-1">
-                      <Text className="font-sans text-xs text-muted-foreground mb-1">Save %</Text>
-                      <TextInput
-                        value={customSavings}
-                        onChangeText={setCustomSavings}
-                        keyboardType="number-pad"
-                        selectionColor="#3B82F6"
-                        style={{ backgroundColor: '#0F172A', borderRadius: 8, paddingHorizontal: 12, paddingVertical: 10, fontFamily: 'Inter_500Medium', color: '#F8FAFC', textAlign: 'center' }}
-                      />
-                    </View>
+                    {[{ label: 'Needs %', value: customNeeds, setter: setCustomNeeds },
+                      { label: 'Wants %', value: customWants, setter: setCustomWants },
+                      { label: 'Save %', value: customSavings, setter: setCustomSavings }].map((field) => (
+                      <View key={field.label} className="flex-1">
+                        <Text className="font-sans text-xs text-muted-foreground mb-1">{field.label}</Text>
+                        <TextInput
+                          value={field.value}
+                          onChangeText={field.setter}
+                          keyboardType="number-pad"
+                          selectionColor={colors.primaryLight}
+                          style={{ backgroundColor: colors.background, borderRadius: 8, paddingHorizontal: 12, paddingVertical: 10, fontFamily: 'Inter_500Medium', color: colors.foreground, textAlign: 'center' }}
+                        />
+                      </View>
+                    ))}
                   </View>
                 </>
               ) : (
@@ -282,42 +320,22 @@ export default function SettingsScreen() {
                     Set exact PLN amounts
                   </Text>
                   <View className="flex-row gap-2 mb-3">
-                    <View className="flex-1">
-                      <Text className="font-sans text-xs text-muted-foreground mb-1">Needs</Text>
-                      <TextInput
-                        value={fixedNeeds}
-                        onChangeText={setFixedNeeds}
-                        keyboardType="decimal-pad"
-                        placeholder="0"
-                        placeholderTextColor="#64748B"
-                        selectionColor="#3B82F6"
-                        style={{ backgroundColor: '#0F172A', borderRadius: 8, paddingHorizontal: 12, paddingVertical: 10, fontFamily: 'Inter_500Medium', color: '#F8FAFC', textAlign: 'center' }}
-                      />
-                    </View>
-                    <View className="flex-1">
-                      <Text className="font-sans text-xs text-muted-foreground mb-1">Wants</Text>
-                      <TextInput
-                        value={fixedWants}
-                        onChangeText={setFixedWants}
-                        keyboardType="decimal-pad"
-                        placeholder="0"
-                        placeholderTextColor="#64748B"
-                        selectionColor="#3B82F6"
-                        style={{ backgroundColor: '#0F172A', borderRadius: 8, paddingHorizontal: 12, paddingVertical: 10, fontFamily: 'Inter_500Medium', color: '#F8FAFC', textAlign: 'center' }}
-                      />
-                    </View>
-                    <View className="flex-1">
-                      <Text className="font-sans text-xs text-muted-foreground mb-1">Save</Text>
-                      <TextInput
-                        value={fixedSavings}
-                        onChangeText={setFixedSavings}
-                        keyboardType="decimal-pad"
-                        placeholder="0"
-                        placeholderTextColor="#64748B"
-                        selectionColor="#3B82F6"
-                        style={{ backgroundColor: '#0F172A', borderRadius: 8, paddingHorizontal: 12, paddingVertical: 10, fontFamily: 'Inter_500Medium', color: '#F8FAFC', textAlign: 'center' }}
-                      />
-                    </View>
+                    {[{ label: 'Needs', value: fixedNeeds, setter: setFixedNeeds },
+                      { label: 'Wants', value: fixedWants, setter: setFixedWants },
+                      { label: 'Save', value: fixedSavings, setter: setFixedSavings }].map((field) => (
+                      <View key={field.label} className="flex-1">
+                        <Text className="font-sans text-xs text-muted-foreground mb-1">{field.label}</Text>
+                        <TextInput
+                          value={field.value}
+                          onChangeText={field.setter}
+                          keyboardType="decimal-pad"
+                          placeholder="0"
+                          placeholderTextColor={colors.muted}
+                          selectionColor={colors.primaryLight}
+                          style={{ backgroundColor: colors.background, borderRadius: 8, paddingHorizontal: 12, paddingVertical: 10, fontFamily: 'Inter_500Medium', color: colors.foreground, textAlign: 'center' }}
+                        />
+                      </View>
+                    ))}
                   </View>
                   <Text className="font-sans text-xs text-muted-foreground mb-2">
                     Total: {formatPLN(

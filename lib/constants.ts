@@ -67,15 +67,42 @@ export const TICKER_PRESETS: TickerPreset[] = [
   { ticker: 'TSLA', label: 'Tesla', category: 'stock' },
 ];
 
-export const COLORS = {
+// Runtime color constants for inline styles, SVG, animations (can't use CSS vars)
+export const COLORS_LIGHT = {
+  background: '#F8F9FB',
+  backgroundSecondary: '#FFFFFF',
+  card: '#FFFFFF',
+  primary: '#2563EB',
+  primaryLight: '#3B82F6',
+  secondary: '#3B82F6',
+  success: '#059669',
+  warning: '#F97316',
+  destructive: '#DC2626',
+  foreground: '#0F172A',
+  foregroundSecondary: '#334155',
+  muted: '#94A3B8',
+  mutedForeground: '#64748B',
+  border: '#E2E8F0',
+  trackBackground: '#E2E8F0',
+} as const;
+
+export const COLORS_DARK = {
   background: '#0F172A',
+  backgroundSecondary: '#1A2332',
   card: '#192134',
-  primary: '#1E40AF',
+  primary: '#2563EB',
+  primaryLight: '#3B82F6',
   secondary: '#3B82F6',
   success: '#059669',
   warning: '#F97316',
   destructive: '#DC2626',
   foreground: '#F8FAFC',
+  foregroundSecondary: '#CBD5E1',
+  muted: '#64748B',
   mutedForeground: '#94A3B8',
   border: 'rgba(255,255,255,0.08)',
+  trackBackground: 'rgba(255,255,255,0.08)',
 } as const;
+
+// Legacy — use useThemeColors() hook instead
+export const COLORS = COLORS_DARK;

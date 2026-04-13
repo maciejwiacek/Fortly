@@ -52,7 +52,7 @@ export function GoalContributeSheet({
             </Pressable>
           </View>
 
-          <View className="bg-background rounded-xl px-4 py-3 mb-4 flex-row items-center">
+          <View className="bg-background rounded-xl px-4 mb-4 flex-row items-center" style={{ minHeight: 52 }}>
             <TextInput
               value={amountText}
               onChangeText={setAmountText}
@@ -60,8 +60,8 @@ export function GoalContributeSheet({
               placeholder="0.00"
               placeholderTextColor="#64748B"
               autoFocus
-              className="flex-1 font-sans-medium text-xl text-foreground"
               selectionColor="#3B82F6"
+              style={{ flex: 1, fontFamily: 'Inter_500Medium', fontSize: 20, color: '#F8FAFC', paddingVertical: 14 }}
             />
             <Text className="font-sans text-lg text-muted-foreground ml-2">zl</Text>
           </View>

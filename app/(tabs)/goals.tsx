@@ -43,7 +43,7 @@ export default function GoalsScreen() {
           <InvestmentSection />
         </View>
 
-        <SafeAreaView edges={['bottom']} style={{ height: 100 }} />
+        <SafeAreaView edges={['bottom']} style={{ height: 120 }} />
       </ScrollView>
 
       {showCreate && <CreateGoalSheet onClose={() => setShowCreate(false)} />}

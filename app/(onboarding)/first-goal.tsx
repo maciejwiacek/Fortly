@@ -68,23 +68,23 @@ export default function FirstGoalScreen() {
             onChangeText={setLabel}
             placeholder="e.g. New Car, Vacation, Emergency Fund"
             placeholderTextColor="#64748B"
-            className="bg-card rounded-xl px-4 py-3 font-sans-medium text-base text-foreground"
             selectionColor="#3B82F6"
+            style={{ backgroundColor: '#192134', borderRadius: 12, paddingHorizontal: 16, paddingVertical: 14, fontFamily: 'Inter_500Medium', fontSize: 16, color: '#F8FAFC' }}
           />
         </View>
 
         {/* Target Amount */}
         <View>
           <Text className="font-sans-medium text-sm text-muted-foreground mb-2">Target Amount (PLN)</Text>
-          <View className="bg-card rounded-xl px-4 py-3 flex-row items-center">
+          <View className="bg-card rounded-xl px-4 flex-row items-center" style={{ minHeight: 52 }}>
             <TextInput
               value={targetText}
               onChangeText={setTargetText}
               keyboardType="decimal-pad"
               placeholder="0"
               placeholderTextColor="#64748B"
-              className="flex-1 font-sans-medium text-lg text-foreground"
               selectionColor="#3B82F6"
+              style={{ flex: 1, fontFamily: 'Inter_500Medium', fontSize: 18, color: '#F8FAFC', paddingVertical: 14 }}
             />
             <Text className="font-sans text-lg text-muted-foreground ml-2">zl</Text>
           </View>

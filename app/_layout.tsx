@@ -6,17 +6,19 @@ import {
   Inter_700Bold,
   useFonts,
 } from '@expo-google-fonts/inter';
-import { DarkTheme, ThemeProvider } from '@react-navigation/native';
+import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
+import { View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
 
 import '../global.css';
 import { useFinanceStore } from '../stores/finance-store';
 import { useStoreHydration } from '../hooks/use-store-hydration';
+import { useTheme } from '../hooks/use-theme';
 
 export { ErrorBoundary } from 'expo-router';
 
@@ -26,7 +28,20 @@ export const unstable_settings = {
 
 SplashScreen.preventAutoHideAsync();
 
-const CustomDarkTheme = {
+const LightNavTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    background: '#F8F9FB',
+    card: '#FFFFFF',
+    text: '#0F172A',
+    border: '#E2E8F0',
+    primary: '#2563EB',
+    notification: '#F97316',
+  },
+};
+
+const DarkNavTheme = {
   ...DarkTheme,
   colors: {
     ...DarkTheme.colors,
@@ -52,6 +67,7 @@ export default function RootLayout() {
   const segments = useSegments();
   const isOnboardingComplete = useFinanceStore((s) => s.isOnboardingComplete);
   const hydrated = useStoreHydration();
+  const { isDark } = useTheme();
 
   useEffect(() => {
     if (fontError) throw fontError;
@@ -80,26 +96,34 @@ export default function RootLayout() {
   }
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <ThemeProvider value={CustomDarkTheme}>
-        <Stack>
-          <Stack.Screen name="(onboarding)" options={{ headerShown: false, animation: 'none' }} />
-          <Stack.Screen name="(tabs)" options={{ headerShown: false, animation: 'none' }} />
-          <Stack.Screen
-            name="add-transaction"
-            options={{
-              presentation: 'modal',
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen
-            name="envelope"
-            options={{
-              headerShown: false,
-            }}
-          />
-        </Stack>
-        <StatusBar style="light" />
+    <GestureHandlerRootView style={{ flex: 1 }} className={isDark ? 'dark' : ''}>
+      <ThemeProvider value={isDark ? DarkNavTheme : LightNavTheme}>
+        <View style={{ flex: 1 }} className={isDark ? 'dark bg-background' : 'bg-background'}>
+          <Stack>
+            <Stack.Screen name="(onboarding)" options={{ headerShown: false, animation: 'none' }} />
+            <Stack.Screen name="(tabs)" options={{ headerShown: false, animation: 'none' }} />
+            <Stack.Screen
+              name="add-transaction"
+              options={{
+                presentation: 'modal',
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="envelope"
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="settings"
+              options={{
+                headerShown: false,
+              }}
+            />
+          </Stack>
+        </View>
+        <StatusBar style={isDark ? 'light' : 'dark'} />
       </ThemeProvider>
     </GestureHandlerRootView>
   );
