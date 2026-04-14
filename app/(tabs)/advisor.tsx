@@ -95,10 +95,10 @@ export default function AdvisorScreen() {
         if (response) {
           addChatMessage({ role: 'assistant', content: response });
         } else {
-          setError('Nie udało się połączyć z AI. Sprawdź połączenie i spróbuj ponownie.');
+          setError('Could not connect to AI. Check your connection and try again.');
         }
       } catch {
-        setError('Wystąpił błąd. Spróbuj ponownie.');
+        setError('Something went wrong. Please try again.');
       } finally {
         setIsLoading(false);
       }
@@ -108,11 +108,11 @@ export default function AdvisorScreen() {
 
   const handleClear = useCallback(() => {
     Alert.alert(
-      'Nowa rozmowa',
-      'Czy na pewno chcesz wyczyścić historię czatu?',
+      'New conversation',
+      'Are you sure you want to clear the chat history?',
       [
-        { text: 'Anuluj', style: 'cancel' },
-        { text: 'Wyczyść', style: 'destructive', onPress: clearChat },
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Clear', style: 'destructive', onPress: clearChat },
       ]
     );
   }, [clearChat]);
@@ -137,10 +137,10 @@ export default function AdvisorScreen() {
       if (response) {
         addChatMessage({ role: 'assistant', content: response });
       } else {
-        setError('Nie udało się połączyć z AI. Sprawdź połączenie i spróbuj ponownie.');
+        setError('Could not connect to AI. Check your connection and try again.');
       }
     } catch {
-      setError('Wystąpił błąd. Spróbuj ponownie.');
+      setError('Something went wrong. Please try again.');
     } finally {
       setIsLoading(false);
     }

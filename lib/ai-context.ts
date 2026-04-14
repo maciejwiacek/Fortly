@@ -74,7 +74,7 @@ export function buildFinancialContext(snapshot: FinanceSnapshot): string {
     .slice(0, 3)
     .map(([cat, amount]) => {
       const label = CATEGORIES.find((c) => c.value === cat)?.label ?? cat;
-      return `${label}: ${formatAmount(amount)} zł`;
+      return `${label}: ${formatAmount(amount)} PLN`;
     })
     .join(', ');
 
@@ -85,7 +85,7 @@ export function buildFinancialContext(snapshot: FinanceSnapshot): string {
         .filter((gc) => gc.goalId === g.id)
         .reduce((sum, gc) => sum + gc.amount, 0);
       const pct = g.targetAmount > 0 ? Math.round((contributed / g.targetAmount) * 100) : 0;
-      return `${g.label} (${g.isDebt ? 'dług' : 'cel'}): ${pct}% z ${formatAmount(g.targetAmount)} zł`;
+      return `${g.label} (${g.isDebt ? 'debt' : 'goal'}): ${pct}% of ${formatAmount(g.targetAmount)} PLN`;
     })
     .join('; ');
 
@@ -121,18 +121,18 @@ export function buildFinancialContext(snapshot: FinanceSnapshot): string {
       ? `Custom (${budgetStrategy.needs}/${budgetStrategy.wants}/${budgetStrategy.savings})`
       : budgetStrategy.type;
 
-  return `Jesteś osobistym doradcą finansowym użytkownika. Oto jego aktualne dane:
-- Dochód miesięczny: ${formatAmount(monthlyIncome)} zł
-- Strategia budżetowa: ${strategyLabel} (Potrzeby ${budgetStrategy.needs}% / Przyjemności ${budgetStrategy.wants}% / Oszczędności ${budgetStrategy.savings}%)
-- Wydatki w tym miesiącu: ${formatAmount(totalSpent)} zł
-  - Potrzeby: ${formatAmount(needsSpent)} zł z ${formatAmount(needsBudget)} zł
-  - Przyjemności: ${formatAmount(wantsSpent)} zł z ${formatAmount(wantsBudget)} zł
-  - Oszczędności: ${formatAmount(savingsContributed)} zł z ${formatAmount(savingsBudget)} zł
-- Top kategorie: ${topCategories || 'brak wydatków'}
-- Cele: ${goalsInfo || 'brak celów'}
-- Inwestycje: łącznie ${formatAmount(totalInvested)} zł${uniqueTickers.length > 0 ? ` (${uniqueTickers.join(', ')})` : ''}
-- Dzień miesiąca: ${dayOfMonth}/${daysInMonth}
+  return `You are the user's personal financial advisor. Here is their current data:
+- Monthly income: ${formatAmount(monthlyIncome)} PLN
+- Budget strategy: ${strategyLabel} (Needs ${budgetStrategy.needs}% / Wants ${budgetStrategy.wants}% / Savings ${budgetStrategy.savings}%)
+- Spending this month: ${formatAmount(totalSpent)} PLN
+  - Needs: ${formatAmount(needsSpent)} PLN of ${formatAmount(needsBudget)} PLN
+  - Wants: ${formatAmount(wantsSpent)} PLN of ${formatAmount(wantsBudget)} PLN
+  - Savings: ${formatAmount(savingsContributed)} PLN of ${formatAmount(savingsBudget)} PLN
+- Top categories: ${topCategories || 'no spending yet'}
+- Goals: ${goalsInfo || 'no goals set'}
+- Investments: total ${formatAmount(totalInvested)} PLN${uniqueTickers.length > 0 ? ` (${uniqueTickers.join(', ')})` : ''}
+- Day of month: ${dayOfMonth}/${daysInMonth}
 
-Odpowiadaj krótko (max 3-4 zdania), konkretnie, po polsku. Podawaj kwoty w złotych.
-Skup się na praktycznych poradach oszczędzania i optymalizacji budżetu.`;
+Respond concisely (max 3-4 sentences), be specific, use PLN amounts.
+Focus on practical savings and budget optimization advice.`;
 }

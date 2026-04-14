@@ -321,8 +321,8 @@ function AddInvestmentModal({ onClose }: { onClose: () => void }) {
               placeholder="Or type ticker (VOO, BTC-USD...)"
               placeholderTextColor={colors.muted}
               autoCapitalize="characters"
-              className="bg-background rounded-xl px-4 py-3 font-sans-medium text-base text-foreground mb-3"
-              selectionColor="#3B82F6"
+              selectionColor={colors.primaryLight}
+              style={{ backgroundColor: colors.background, borderRadius: 12, paddingHorizontal: 16, paddingVertical: 14, fontFamily: 'Inter_500Medium', fontSize: 16, color: colors.foreground, marginBottom: 12 }}
             />
 
             {/* Label */}
@@ -331,23 +331,23 @@ function AddInvestmentModal({ onClose }: { onClose: () => void }) {
               onChangeText={setLabel}
               placeholder="Name (e.g. S&P 500 via XTB)"
               placeholderTextColor={colors.muted}
-              className="bg-background rounded-xl px-4 py-3 font-sans-medium text-base text-foreground mb-3"
-              selectionColor="#3B82F6"
+              selectionColor={colors.primaryLight}
+              style={{ backgroundColor: colors.background, borderRadius: 12, paddingHorizontal: 16, paddingVertical: 14, fontFamily: 'Inter_500Medium', fontSize: 16, color: colors.foreground, marginBottom: 12 }}
             />
 
             {/* How much do you own */}
             <Text className="font-sans-medium text-sm text-muted-foreground mb-2">
               Current value you hold (PLN)
             </Text>
-            <View className="bg-background rounded-xl px-4 py-3 flex-row items-center mb-3">
+            <View className="bg-background rounded-xl px-4 flex-row items-center mb-3" style={{ minHeight: 52 }}>
               <TextInput
                 value={amountText}
                 onChangeText={setAmountText}
                 keyboardType="decimal-pad"
                 placeholder="e.g. 2500"
                 placeholderTextColor={colors.muted}
-                className="flex-1 font-sans-medium text-xl text-foreground"
-                selectionColor="#3B82F6"
+                selectionColor={colors.primaryLight}
+                style={{ flex: 1, fontFamily: 'Inter_500Medium', fontSize: 20, color: colors.foreground, paddingVertical: 14 }}
               />
               <Text className="font-sans text-lg text-muted-foreground">zl</Text>
             </View>
@@ -358,8 +358,8 @@ function AddInvestmentModal({ onClose }: { onClose: () => void }) {
               onChangeText={setNote}
               placeholder="Note (optional)"
               placeholderTextColor={colors.muted}
-              className="bg-background rounded-xl px-4 py-3 font-sans text-sm text-foreground mb-2"
-              selectionColor="#3B82F6"
+              selectionColor={colors.primaryLight}
+              style={{ backgroundColor: colors.background, borderRadius: 12, paddingHorizontal: 16, paddingVertical: 14, fontFamily: 'Inter_400Regular', fontSize: 14, color: colors.foreground, marginBottom: 8 }}
             />
           </ScrollView>
 

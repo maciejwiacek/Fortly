@@ -235,8 +235,8 @@ export default function AddTransactionScreen() {
                 placeholder="Or type ticker (VOO, BTC-USD...)"
                 placeholderTextColor={colors.muted}
                 autoCapitalize="characters"
-                className="bg-card rounded-xl px-4 py-3 font-sans-medium text-base text-foreground mb-3"
                 selectionColor={colors.primaryLight}
+                style={{ backgroundColor: colors.card, borderRadius: 12, paddingHorizontal: 16, paddingVertical: 14, fontFamily: 'Inter_500Medium', fontSize: 16, color: colors.foreground, marginBottom: 12 }}
               />
 
               <TextInput
@@ -244,16 +244,16 @@ export default function AddTransactionScreen() {
                 onChangeText={setInvestLabel}
                 placeholder="Investment name"
                 placeholderTextColor={colors.muted}
-                className="bg-card rounded-xl px-4 py-3 font-sans-medium text-base text-foreground mb-3"
                 selectionColor={colors.primaryLight}
+                style={{ backgroundColor: colors.card, borderRadius: 12, paddingHorizontal: 16, paddingVertical: 14, fontFamily: 'Inter_500Medium', fontSize: 16, color: colors.foreground, marginBottom: 12 }}
               />
               <TextInput
                 value={investNote}
                 onChangeText={setInvestNote}
                 placeholder="Note (optional)"
                 placeholderTextColor={colors.muted}
-                className="bg-card rounded-xl px-4 py-3 font-sans text-sm text-foreground"
                 selectionColor={colors.primaryLight}
+                style={{ backgroundColor: colors.card, borderRadius: 12, paddingHorizontal: 16, paddingVertical: 14, fontFamily: 'Inter_400Regular', fontSize: 14, color: colors.foreground }}
               />
             </View>
           )}
