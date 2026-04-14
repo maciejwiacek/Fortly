@@ -4,7 +4,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
 import { format, addMonths, subMonths } from 'date-fns';
 import * as Haptics from 'expo-haptics';
-import { AnimatedTabScreen } from '../../components/navigation/AnimatedTabScreen';
 import { PageHeader } from '../../components/layout/page-header';
 import { TransactionList } from '../../components/transactions/transaction-list';
 import { SpendingCalendar } from '../../components/transactions/spending-calendar';
@@ -34,7 +33,6 @@ export default function TransactionsScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-background" edges={['top']}>
-      <AnimatedTabScreen>
       {/* Header */}
       <View className="flex-row items-center justify-between px-4 pt-4 pb-2">
         <Text className="font-sans-bold text-2xl text-foreground">Transactions</Text>
@@ -113,7 +111,6 @@ export default function TransactionsScreen() {
       <View className="flex-1">
         <TransactionList transactions={transactions} />
       </View>
-      </AnimatedTabScreen>
     </SafeAreaView>
   );
 }

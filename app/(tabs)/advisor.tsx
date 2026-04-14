@@ -12,7 +12,6 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { AnimatedTabScreen } from '../../components/navigation/AnimatedTabScreen';
 import { ChatInput } from '../../components/advisor/ChatInput';
 import { ChatMessage } from '../../components/advisor/ChatMessage';
 import { SuggestedPrompts } from '../../components/advisor/SuggestedPrompts';
@@ -163,7 +162,6 @@ export default function AdvisorScreen() {
 
   return (
       <SafeAreaView className="flex-1 bg-background" edges={['top']}>
-        <AnimatedTabScreen>
         {/* Header */}
         <View className="flex-row items-center justify-between px-4 pt-4 pb-3">
           <View>
@@ -221,7 +219,6 @@ export default function AdvisorScreen() {
         <Animated.View style={{ height: keyboardHeight }} />
         {/* Spacer for floating tab bar — hidden when keyboard is open */}
         {!keyboardOpen && <View style={{ height: 110 }} />}
-        </AnimatedTabScreen>
       </SafeAreaView>
   );
 }

@@ -2,7 +2,6 @@ import { View, Text, ScrollView, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
-import { AnimatedTabScreen } from '../../components/navigation/AnimatedTabScreen';
 import { PageHeader } from '../../components/layout/page-header';
 import { BudgetAllocation } from '../../components/dashboard/budget-allocation';
 import { GoalsSummary } from '../../components/dashboard/goals-summary';
@@ -26,7 +25,6 @@ export default function DashboardScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-background" edges={['top']}>
-      <AnimatedTabScreen>
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         <PageHeader greeting showSettings subtitle={formatMonthDisplay(monthKey)} title="Dashboard" />
 
@@ -69,7 +67,6 @@ export default function DashboardScreen() {
 
         <SafeAreaView edges={['bottom']} style={{ height: 120 }} />
       </ScrollView>
-      </AnimatedTabScreen>
     </SafeAreaView>
   );
 }
