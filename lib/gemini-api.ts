@@ -80,7 +80,7 @@ export async function generateInsight(
           role: 'user',
           parts: [
             {
-              text: 'Na podstawie moich danych finansowych, daj mi jedną krótką, konkretną poradę finansową na dziś (max 2-3 zdania). Bądź konkretny - podawaj kwoty i nazwy kategorii. Nie używaj nagłówków ani list.',
+              text: 'Based on my financial data, give me one specific financial tip for today in ONE short sentence (max 15 words). Mention an amount or category. No headers, lists, or emoji.',
             },
           ],
         },

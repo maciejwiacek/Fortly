@@ -3,6 +3,7 @@ import { View, Text, Pressable, Modal, TextInput } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { useFinanceStore } from '../../stores/finance-store';
+import { useThemeColors } from '../../hooks/use-theme-colors';
 import { getTodayStr } from '../../lib/utils';
 
 interface GoalContributeSheetProps {
@@ -17,6 +18,7 @@ export function GoalContributeSheet({
   onClose,
 }: GoalContributeSheetProps) {
   const addGoalContribution = useFinanceStore((s) => s.addGoalContribution);
+  const colors = useThemeColors();
   const [amountText, setAmountText] = useState('');
 
   const handleSubmit = () => {
@@ -48,20 +50,20 @@ export function GoalContributeSheet({
               Add to {goalLabel}
             </Text>
             <Pressable onPress={onClose} className="p-2" hitSlop={8}>
-              <Feather name="x" size={20} color="#94A3B8" />
+              <Feather name="x" size={20} color={colors.mutedForeground} />
             </Pressable>
           </View>
 
-          <View className="bg-background rounded-xl px-4 py-3 mb-4 flex-row items-center">
+          <View className="bg-background rounded-xl px-4 mb-4 flex-row items-center" style={{ minHeight: 52 }}>
             <TextInput
               value={amountText}
               onChangeText={setAmountText}
               keyboardType="decimal-pad"
               placeholder="0.00"
-              placeholderTextColor="#64748B"
+              placeholderTextColor={colors.muted}
               autoFocus
-              className="flex-1 font-sans-medium text-xl text-foreground"
               selectionColor="#3B82F6"
+              style={{ flex: 1, fontFamily: 'Inter_500Medium', fontSize: 20, color: '#F8FAFC', paddingVertical: 14 }}
             />
             <Text className="font-sans text-lg text-muted-foreground ml-2">zl</Text>
           </View>

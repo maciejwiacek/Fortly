@@ -2,6 +2,7 @@ import { View, Text, Pressable, ScrollView, KeyboardAvoidingView, Platform } fro
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
+import { useThemeColors } from '../../hooks/use-theme-colors';
 import { ProgressDots } from './progress-dots';
 
 interface OnboardingScreenProps {
@@ -24,6 +25,7 @@ export function OnboardingScreen({
   footer,
 }: OnboardingScreenProps) {
   const router = useRouter();
+  const colors = useThemeColors();
 
   return (
     <SafeAreaView className="flex-1 bg-background" edges={['top', 'bottom']}>
@@ -36,7 +38,7 @@ export function OnboardingScreen({
           <View className="flex-row items-center h-12">
             {canGoBack && (
               <Pressable onPress={() => router.back()} className="p-2 -ml-2" hitSlop={8}>
-                <Feather name="arrow-left" size={24} color="#F8FAFC" />
+                <Feather name="arrow-left" size={24} color={colors.foreground} />
               </Pressable>
             )}
           </View>

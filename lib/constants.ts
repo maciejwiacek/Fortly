@@ -67,15 +67,42 @@ export const TICKER_PRESETS: TickerPreset[] = [
   { ticker: 'TSLA', label: 'Tesla', category: 'stock' },
 ];
 
-export const COLORS = {
-  background: '#0F172A',
-  card: '#192134',
-  primary: '#1E40AF',
+// Runtime color constants for inline styles, SVG, animations (can't use CSS vars)
+export const COLORS_LIGHT = {
+  background: '#FFFFFF',
+  backgroundSecondary: '#F7F7F8',
+  card: '#F7F7F8',
+  primary: '#2563EB',
+  primaryLight: '#3B82F6',
   secondary: '#3B82F6',
-  success: '#059669',
-  warning: '#F97316',
+  success: '#16A34A',
+  warning: '#EA580C',
   destructive: '#DC2626',
-  foreground: '#F8FAFC',
-  mutedForeground: '#94A3B8',
-  border: 'rgba(255,255,255,0.08)',
+  foreground: '#0A0A0A',
+  foregroundSecondary: '#404040',
+  muted: '#A3A3A3',
+  mutedForeground: '#737373',
+  border: '#EBEBEB',
+  trackBackground: '#EBEBEB',
 } as const;
+
+export const COLORS_DARK = {
+  background: '#0A0A0A',
+  backgroundSecondary: '#171717',
+  card: '#171717',
+  primary: '#3B82F6',
+  primaryLight: '#60A5FA',
+  secondary: '#3B82F6',
+  success: '#22C55E',
+  warning: '#FB923C',
+  destructive: '#EF4444',
+  foreground: '#FAFAFA',
+  foregroundSecondary: '#A3A3A3',
+  muted: '#737373',
+  mutedForeground: '#A3A3A3',
+  border: '#262626',
+  trackBackground: '#262626',
+} as const;
+
+// Legacy — use useThemeColors() hook instead
+export const COLORS = COLORS_DARK;

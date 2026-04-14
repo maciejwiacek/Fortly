@@ -3,6 +3,8 @@ import { ActivityIndicator, Text, View } from 'react-native';
 
 import type { ChatMessage as ChatMessageType } from '../../lib/types';
 
+const ACCENT = '#8B5CF6';
+
 interface Props {
   message: ChatMessageType;
   isLoading?: boolean;
@@ -17,9 +19,9 @@ export function ChatMessage({ message, isLoading }: Props) {
     >
       {!isUser && (
         <View className="w-7 h-7 rounded-full bg-card items-center justify-center mr-2 mt-1"
-          style={{ borderWidth: 1, borderColor: 'rgba(139, 92, 246, 0.3)' }}
+          style={{ borderWidth: 1, borderColor: ACCENT + '30' }}
         >
-          <Sparkles size={14} color="#8B5CF6" />
+          <Sparkles size={14} color={ACCENT} />
         </View>
       )}
 
@@ -32,7 +34,7 @@ export function ChatMessage({ message, isLoading }: Props) {
         style={{ maxWidth: '78%' }}
       >
         {isLoading ? (
-          <ActivityIndicator size="small" color="#8B5CF6" />
+          <ActivityIndicator size="small" color={ACCENT} />
         ) : (
           <Text
             className={`font-sans text-sm leading-5 ${

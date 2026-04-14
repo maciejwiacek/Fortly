@@ -6,12 +6,14 @@ import * as Haptics from 'expo-haptics';
 import { OnboardingScreen } from '../../components/onboarding/onboarding-screen';
 import { ContinueButton } from '../../components/onboarding/continue-button';
 import { useFinanceStore } from '../../stores/finance-store';
+import { useThemeColors } from '../../hooks/use-theme-colors';
 
 const ICON_SUBSET = ['home', 'monitor', 'truck', 'briefcase', 'star', 'heart', 'target', 'gift'] as const;
 const COLOR_SUBSET = ['#F43F5E', '#8B5CF6', '#06B6D4', '#F97316', '#10B981', '#6366F1'];
 
 export default function FirstGoalScreen() {
   const router = useRouter();
+  const colors = useThemeColors();
   const addGoal = useFinanceStore((s) => s.addGoal);
 
   const [label, setLabel] = useState('');
@@ -67,24 +69,24 @@ export default function FirstGoalScreen() {
             value={label}
             onChangeText={setLabel}
             placeholder="e.g. New Car, Vacation, Emergency Fund"
-            placeholderTextColor="#64748B"
-            className="bg-card rounded-xl px-4 py-3 font-sans-medium text-base text-foreground"
-            selectionColor="#3B82F6"
+            placeholderTextColor={colors.muted}
+            selectionColor={colors.primaryLight}
+            style={{ backgroundColor: colors.card, borderRadius: 12, paddingHorizontal: 16, paddingVertical: 14, fontFamily: 'Inter_500Medium', fontSize: 16, color: colors.foreground }}
           />
         </View>
 
         {/* Target Amount */}
         <View>
           <Text className="font-sans-medium text-sm text-muted-foreground mb-2">Target Amount (PLN)</Text>
-          <View className="bg-card rounded-xl px-4 py-3 flex-row items-center">
+          <View className="bg-card rounded-xl px-4 flex-row items-center" style={{ minHeight: 52 }}>
             <TextInput
               value={targetText}
               onChangeText={setTargetText}
               keyboardType="decimal-pad"
               placeholder="0"
-              placeholderTextColor="#64748B"
-              className="flex-1 font-sans-medium text-lg text-foreground"
-              selectionColor="#3B82F6"
+              placeholderTextColor={colors.muted}
+              selectionColor={colors.primaryLight}
+              style={{ flex: 1, fontFamily: 'Inter_500Medium', fontSize: 18, color: colors.foreground, paddingVertical: 14 }}
             />
             <Text className="font-sans text-lg text-muted-foreground ml-2">zl</Text>
           </View>
@@ -101,7 +103,7 @@ export default function FirstGoalScreen() {
           <Switch
             value={isDebt}
             onValueChange={setIsDebt}
-            trackColor={{ false: '#1E293B', true: '#F43F5E' }}
+            trackColor={{ false: colors.border, true: '#F43F5E' }}
             thumbColor="#FFFFFF"
           />
         </View>
@@ -120,7 +122,7 @@ export default function FirstGoalScreen() {
                   borderRadius: 14,
                   alignItems: 'center',
                   justifyContent: 'center',
-                  backgroundColor: icon === iconName ? color + '30' : 'rgba(255,255,255,0.04)',
+                  backgroundColor: icon === iconName ? color + '30' : colors.card,
                   borderWidth: icon === iconName ? 1.5 : 0,
                   borderColor: icon === iconName ? color : 'transparent',
                 }}
@@ -128,7 +130,7 @@ export default function FirstGoalScreen() {
                 <Feather
                   name={iconName as any}
                   size={22}
-                  color={icon === iconName ? color : '#94A3B8'}
+                  color={icon === iconName ? color : colors.mutedForeground}
                 />
               </Pressable>
             ))}
@@ -149,7 +151,7 @@ export default function FirstGoalScreen() {
                   borderRadius: 22,
                   backgroundColor: c,
                   borderWidth: color === c ? 3 : 0,
-                  borderColor: '#FFFFFF',
+                  borderColor: colors.foreground,
                 }}
               />
             ))}

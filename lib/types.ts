@@ -98,10 +98,16 @@ export interface ChatMessage {
   timestamp: string; // ISO datetime
 }
 
+export type ThemePreference = 'system' | 'light' | 'dark';
+
 export interface FinanceStore {
   // Onboarding
   isOnboardingComplete: boolean;
   completeOnboarding: () => void;
+
+  // Theme
+  themePreference: ThemePreference;
+  setThemePreference: (pref: ThemePreference) => void;
 
   // Config
   monthlyIncome: number; // grosze

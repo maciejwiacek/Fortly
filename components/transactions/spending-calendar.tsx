@@ -6,26 +6,17 @@ import {
   eachDayOfInterval,
   getDay,
   isToday,
-  isSameDay,
-  parseISO,
 } from 'date-fns';
-import { pl } from 'date-fns/locale';
 import type { Transaction } from '../../lib/types';
+import { useThemeColors } from '../../hooks/use-theme-colors';
 
 const WEEKDAYS = ['Pn', 'Wt', 'Sr', 'Cz', 'Pt', 'Sb', 'Nd'];
 
 interface SpendingCalendarProps {
-  month: Date; // any date in the target month
+  month: Date;
   transactions: Transaction[];
-  selectedDate: string | null; // 'YYYY-MM-DD' or null for all
+  selectedDate: string | null;
   onSelectDate: (date: string | null) => void;
-}
-
-function getDotColor(amount: number): string {
-  if (amount === 0) return 'transparent';
-  if (amount < 5000) return '#059669'; // <50 PLN — green
-  if (amount < 15000) return '#F97316'; // <150 PLN — orange
-  return '#DC2626'; // 150+ PLN — red
 }
 
 export function SpendingCalendar({
@@ -34,31 +25,34 @@ export function SpendingCalendar({
   selectedDate,
   onSelectDate,
 }: SpendingCalendarProps) {
+  const colors = useThemeColors();
   const monthStart = startOfMonth(month);
   const monthEnd = endOfMonth(month);
   const days = eachDayOfInterval({ start: monthStart, end: monthEnd });
 
-  // Build daily totals map
   const dailyTotals = new Map<string, number>();
   for (const t of transactions) {
     const current = dailyTotals.get(t.date) ?? 0;
     dailyTotals.set(t.date, current + t.amount);
   }
 
-  // Monday=0 offset for first day (date-fns getDay: 0=Sun, 1=Mon...)
   const firstDayOfWeek = getDay(monthStart);
-  // Convert to Monday-based: Mon=0, Tue=1, ..., Sun=6
   const startOffset = firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1;
 
-  // Create grid cells: empty slots + actual days
   const cells: (Date | null)[] = [
     ...Array(startOffset).fill(null),
     ...days,
   ];
 
+  function getDotColor(amount: number): string {
+    if (amount === 0) return 'transparent';
+    if (amount < 5000) return colors.success;
+    if (amount < 15000) return colors.warning;
+    return colors.destructive;
+  }
+
   return (
     <View className="mx-4 mb-3">
-      {/* Weekday headers */}
       <View className="flex-row mb-1">
         {WEEKDAYS.map((d) => (
           <View key={d} className="flex-1 items-center">
@@ -69,7 +63,6 @@ export function SpendingCalendar({
         ))}
       </View>
 
-      {/* Day grid */}
       <View className="flex-row flex-wrap">
         {cells.map((day, index) => {
           if (!day) {
@@ -103,9 +96,9 @@ export function SpendingCalendar({
                   alignItems: 'center',
                   justifyContent: 'center',
                   backgroundColor: isSelected
-                    ? '#1E40AF'
+                    ? colors.primary
                     : today
-                    ? '#192134'
+                    ? colors.card
                     : 'transparent',
                 }}
               >
@@ -116,14 +109,13 @@ export function SpendingCalendar({
                     color: isSelected
                       ? '#FFFFFF'
                       : today
-                      ? '#3B82F6'
-                      : '#F8FAFC',
+                      ? colors.primaryLight
+                      : colors.foreground,
                   }}
                 >
                   {format(day, 'd')}
                 </Text>
               </View>
-              {/* Spending dot */}
               {hasSpending && !isSelected && (
                 <View
                   style={{

@@ -3,9 +3,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import { ContinueButton } from '../../components/onboarding/continue-button';
+import { useThemeColors } from '../../hooks/use-theme-colors';
 
 export default function WelcomeScreen() {
   const router = useRouter();
+  const colors = useThemeColors();
 
   return (
     <SafeAreaView className="flex-1 bg-background" edges={['top', 'bottom']}>
@@ -15,13 +17,13 @@ export default function WelcomeScreen() {
             width: 120,
             height: 120,
             borderRadius: 32,
-            backgroundColor: '#1E40AF20',
+            backgroundColor: colors.primary + '15',
             alignItems: 'center',
             justifyContent: 'center',
             marginBottom: 32,
           }}
         >
-          <Feather name="trending-up" size={64} color="#3B82F6" />
+          <Feather name="trending-up" size={64} color={colors.primary} />
         </View>
 
         <Text className="font-sans-bold text-3xl text-foreground text-center">

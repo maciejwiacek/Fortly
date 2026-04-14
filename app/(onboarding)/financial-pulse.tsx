@@ -5,6 +5,7 @@ import { Feather } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { OnboardingScreen } from '../../components/onboarding/onboarding-screen';
 import { ContinueButton } from '../../components/onboarding/continue-button';
+import { useThemeColors } from '../../hooks/use-theme-colors';
 
 const PULSE_OPTIONS = [
   {
@@ -39,6 +40,7 @@ const PULSE_OPTIONS = [
 
 export default function FinancialPulseScreen() {
   const router = useRouter();
+  const colors = useThemeColors();
   const [selected, setSelected] = useState('building');
 
   const handleSelect = (id: string) => {
@@ -72,7 +74,7 @@ export default function FinancialPulseScreen() {
               className={`rounded-xl p-4 ${isSelected ? '' : 'bg-card'}`}
               style={
                 isSelected
-                  ? { backgroundColor: '#1E40AF20', borderWidth: 1.5, borderColor: '#3B82F6' }
+                  ? { backgroundColor: colors.primary + '15', borderWidth: 1.5, borderColor: colors.primary }
                   : { borderWidth: 1.5, borderColor: 'transparent' }
               }
             >
@@ -82,7 +84,7 @@ export default function FinancialPulseScreen() {
                     width: 44,
                     height: 44,
                     borderRadius: 12,
-                    backgroundColor: isSelected ? '#3B82F620' : 'rgba(255,255,255,0.04)',
+                    backgroundColor: isSelected ? colors.primary + '15' : colors.card,
                     alignItems: 'center',
                     justifyContent: 'center',
                     marginRight: 12,
@@ -91,7 +93,7 @@ export default function FinancialPulseScreen() {
                   <Feather
                     name={option.icon}
                     size={22}
-                    color={isSelected ? '#3B82F6' : '#94A3B8'}
+                    color={isSelected ? colors.primary : colors.mutedForeground}
                   />
                 </View>
                 <View className="flex-1">

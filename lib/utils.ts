@@ -1,23 +1,24 @@
 import { format, isToday, isYesterday, parseISO } from 'date-fns';
-import { pl } from 'date-fns/locale';
+import { enUS } from 'date-fns/locale';
 
 /**
  * Format grosze amount to PLN display string.
- * 450099 → "4 500,99 zł"
+ * 450099 → "4,500.99 PLN"
  */
 export function formatPLN(grosze: number): string {
-  return new Intl.NumberFormat('pl-PL', {
+  return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'PLN',
-  }).format(grosze / 100);
+    currencyDisplay: 'code',
+  }).format(grosze / 100).replace('PLN', '').trim() + ' zl';
 }
 
 /**
  * Format grosze as a short amount (no currency symbol).
- * 450099 → "4 500,99"
+ * 450099 → "4,500.99"
  */
 export function formatAmount(grosze: number): string {
-  return new Intl.NumberFormat('pl-PL', {
+  return new Intl.NumberFormat('en-US', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   }).format(grosze / 100);
@@ -46,21 +47,21 @@ export function getCurrentMonthKey(): string {
 
 /**
  * Format a date string for display in transaction list.
- * Returns "Dzisiaj", "Wczoraj", or "5 kwietnia" etc.
+ * Returns "Today", "Yesterday", or "April 5" etc.
  */
 export function formatDateGroup(dateStr: string): string {
   const date = parseISO(dateStr);
-  if (isToday(date)) return 'Dzisiaj';
-  if (isYesterday(date)) return 'Wczoraj';
-  return format(date, 'd MMMM', { locale: pl });
+  if (isToday(date)) return 'Today';
+  if (isYesterday(date)) return 'Yesterday';
+  return format(date, 'MMMM d', { locale: enUS });
 }
 
 /**
- * Format month key for display. '2026-04' → 'Kwiecień 2026'
+ * Format month key for display. '2026-04' → 'April 2026'
  */
 export function formatMonthDisplay(monthKey: string): string {
   const date = parseISO(`${monthKey}-01`);
-  return format(date, 'LLLL yyyy', { locale: pl });
+  return format(date, 'LLLL yyyy', { locale: enUS });
 }
 
 /**
@@ -68,9 +69,9 @@ export function formatMonthDisplay(monthKey: string): string {
  * <60% → green, <85% → orange, ≥85% → red
  */
 export function getEnvelopeColor(ratio: number): string {
-  if (ratio < 0.6) return '#059669'; // success green
-  if (ratio < 0.85) return '#F97316'; // warning orange
-  return '#DC2626'; // destructive red
+  if (ratio < 0.6) return '#059669';
+  if (ratio < 0.85) return '#F97316';
+  return '#DC2626';
 }
 
 /**

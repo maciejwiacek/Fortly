@@ -3,19 +3,35 @@ import type { Config } from 'tailwindcss';
 export default {
   content: ['./app/**/*.{ts,tsx}', './components/**/*.{ts,tsx}'],
   presets: [require('nativewind/preset')],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
-        background: '#0F172A',
-        card: '#192134',
-        primary: { DEFAULT: '#1E40AF', light: '#3B82F6' },
-        secondary: '#3B82F6',
-        success: '#059669',
-        warning: '#F97316',
-        destructive: '#DC2626',
-        muted: { DEFAULT: '#64748B', foreground: '#94A3B8' },
-        foreground: '#F8FAFC',
-        border: 'rgba(255,255,255,0.08)',
+        background: {
+          DEFAULT: 'rgb(var(--color-background) / <alpha-value>)',
+          secondary: 'rgb(var(--color-background-secondary) / <alpha-value>)',
+        },
+        card: {
+          DEFAULT: 'rgb(var(--color-card) / <alpha-value>)',
+          hover: 'rgb(var(--color-card-hover) / <alpha-value>)',
+        },
+        foreground: {
+          DEFAULT: 'rgb(var(--color-foreground) / <alpha-value>)',
+          secondary: 'rgb(var(--color-foreground-secondary) / <alpha-value>)',
+        },
+        muted: {
+          DEFAULT: 'rgb(var(--color-muted) / <alpha-value>)',
+          foreground: 'rgb(var(--color-muted-foreground) / <alpha-value>)',
+        },
+        border: 'rgb(var(--color-border) / <alpha-value>)',
+        primary: {
+          DEFAULT: 'rgb(var(--color-primary) / <alpha-value>)',
+          light: 'rgb(var(--color-primary-light) / <alpha-value>)',
+        },
+        secondary: 'rgb(var(--color-secondary) / <alpha-value>)',
+        success: 'rgb(var(--color-success) / <alpha-value>)',
+        warning: 'rgb(var(--color-warning) / <alpha-value>)',
+        destructive: 'rgb(var(--color-destructive) / <alpha-value>)',
       },
       fontFamily: {
         sans: ['Inter_400Regular'],

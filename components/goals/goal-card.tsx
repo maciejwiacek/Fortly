@@ -7,6 +7,8 @@ import * as Haptics from 'expo-haptics';
 import type { GoalProgress } from '../../hooks/use-goal-progress';
 import { formatPLN, clamp } from '../../lib/utils';
 import { useFinanceStore } from '../../stores/finance-store';
+import { useThemeColors } from '../../hooks/use-theme-colors';
+import { useTheme } from '../../hooks/use-theme';
 import { GoalContributeSheet } from './goal-contribute-sheet';
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
@@ -16,16 +18,18 @@ interface GoalCardProps {
 }
 
 function getMilestoneLabel(pct: number): string {
-  if (pct >= 100) return 'Complete! 🎉';
-  if (pct >= 75) return 'Almost there! 🔥';
-  if (pct >= 50) return 'Halfway! 💪';
-  if (pct >= 25) return 'Getting started 🌱';
+  if (pct >= 100) return 'Complete!';
+  if (pct >= 75) return 'Almost there!';
+  if (pct >= 50) return 'Halfway!';
+  if (pct >= 25) return 'Getting started';
   return '';
 }
 
 export function GoalCard({ goal }: GoalCardProps) {
   const [showContribute, setShowContribute] = useState(false);
   const deleteGoal = useFinanceStore((s) => s.deleteGoal);
+  const colors = useThemeColors();
+  const { isDark } = useTheme();
 
   const gaugeSize = 100;
   const strokeWidth = 8;
@@ -38,8 +42,9 @@ export function GoalCard({ goal }: GoalCardProps) {
     strokeDashoffset: circumference * (1 - animatedRatio.value),
   }));
 
-  const bgTint = goal.color + '18'; // 10% opacity hex
   const milestoneLabel = getMilestoneLabel(goal.percentage);
+  const inactiveDot = isDark ? '#333333' : '#E0E0E0';
+  const buttonBg = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)';
 
   const handleDelete = () => {
     Alert.alert(
@@ -62,8 +67,8 @@ export function GoalCard({ goal }: GoalCardProps) {
   return (
     <>
       <View
-        className="rounded-2xl p-4 mx-4 mb-3"
-        style={{ backgroundColor: bgTint, borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)' }}
+        className="bg-card rounded-2xl p-4 mx-4 mb-3"
+        style={{ borderWidth: 1, borderColor: colors.border }}
       >
         <View className="flex-row items-center">
           {/* Circular gauge */}
@@ -73,7 +78,7 @@ export function GoalCard({ goal }: GoalCardProps) {
                 cx={gaugeSize / 2}
                 cy={gaugeSize / 2}
                 r={radius}
-                stroke="rgba(255,255,255,0.08)"
+                stroke={colors.trackBackground}
                 strokeWidth={strokeWidth}
                 fill="none"
               />
@@ -81,7 +86,7 @@ export function GoalCard({ goal }: GoalCardProps) {
                 cx={gaugeSize / 2}
                 cy={gaugeSize / 2}
                 r={radius}
-                stroke={goal.isComplete ? '#059669' : goal.color}
+                stroke={goal.isComplete ? colors.success : goal.color}
                 strokeWidth={strokeWidth}
                 fill="none"
                 strokeDasharray={circumference}
@@ -95,10 +100,10 @@ export function GoalCard({ goal }: GoalCardProps) {
               className="absolute items-center justify-center"
               style={{ width: gaugeSize, height: gaugeSize }}
             >
-              <Feather name={goal.icon as any} size={22} color={goal.isComplete ? '#059669' : goal.color} />
+              <Feather name={goal.icon as any} size={22} color={goal.isComplete ? colors.success : goal.color} />
               <Text
                 className="font-sans-bold text-xs"
-                style={{ color: goal.isComplete ? '#059669' : goal.color }}
+                style={{ color: goal.isComplete ? colors.success : goal.color }}
               >
                 {goal.percentage}%
               </Text>
@@ -112,7 +117,7 @@ export function GoalCard({ goal }: GoalCardProps) {
                 {goal.label}
               </Text>
               <Pressable onPress={handleDelete} className="p-1.5" hitSlop={8}>
-                <Feather name="trash-2" size={14} color="#94A3B8" />
+                <Feather name="trash-2" size={14} color={colors.mutedForeground} />
               </Pressable>
             </View>
 
@@ -131,11 +136,11 @@ export function GoalCard({ goal }: GoalCardProps) {
             {milestoneLabel ? (
               <View
                 className="self-start rounded-full px-2.5 py-1 mt-2"
-                style={{ backgroundColor: goal.isComplete ? 'rgba(5,150,105,0.2)' : bgTint }}
+                style={{ backgroundColor: goal.color + '15' }}
               >
                 <Text
                   className="font-sans-medium text-xs"
-                  style={{ color: goal.isComplete ? '#059669' : goal.color }}
+                  style={{ color: goal.color }}
                 >
                   {milestoneLabel}
                 </Text>
@@ -151,8 +156,8 @@ export function GoalCard({ goal }: GoalCardProps) {
                   style={{
                     backgroundColor:
                       goal.percentage >= m
-                        ? goal.isComplete ? '#059669' : goal.color
-                        : 'rgba(255,255,255,0.1)',
+                        ? goal.isComplete ? colors.success : goal.color
+                        : inactiveDot,
                   }}
                 />
               ))}
@@ -165,7 +170,7 @@ export function GoalCard({ goal }: GoalCardProps) {
           <Pressable
             onPress={() => setShowContribute(true)}
             className="mt-3 rounded-xl py-3 items-center flex-row justify-center"
-            style={{ backgroundColor: 'rgba(255,255,255,0.06)' }}
+            style={{ backgroundColor: buttonBg }}
           >
             <Feather name="plus" size={16} color={goal.color} />
             <Text className="font-sans-medium text-sm ml-1.5" style={{ color: goal.color }}>

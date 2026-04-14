@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { TextInput, View, Text, Pressable } from 'react-native';
+import { useThemeColors } from '../../hooks/use-theme-colors';
 
 interface AmountInputProps {
   value: number; // grosze
@@ -8,6 +9,7 @@ interface AmountInputProps {
 }
 
 export function AmountInput({ value, onChange, autoFocus = true }: AmountInputProps) {
+  const colors = useThemeColors();
   const [displayValue, setDisplayValue] = useState(
     value > 0 ? (value / 100).toFixed(2) : ''
   );
@@ -52,10 +54,10 @@ export function AmountInput({ value, onChange, autoFocus = true }: AmountInputPr
           onChangeText={handleChange}
           keyboardType="decimal-pad"
           placeholder="0.00"
-          placeholderTextColor="#64748B"
+          placeholderTextColor={colors.muted}
           className="font-sans-light text-foreground text-center"
           style={{ fontSize: 48, minWidth: 120 }}
-          selectionColor="#3B82F6"
+          selectionColor={colors.primaryLight}
         />
         <Text className="font-sans text-2xl text-muted-foreground ml-2">
           zl

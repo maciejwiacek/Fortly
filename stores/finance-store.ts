@@ -12,6 +12,9 @@ export const useFinanceStore = create<FinanceStore>()(
       isOnboardingComplete: false,
       completeOnboarding: () => set({ isOnboardingComplete: true }),
 
+      themePreference: 'system',
+      setThemePreference: (pref) => set({ themePreference: pref }),
+
       monthlyIncome: 0,
       budgetStrategy: BUDGET_STRATEGIES['50-30-20'],
       transactions: [],
@@ -111,13 +114,21 @@ export const useFinanceStore = create<FinanceStore>()(
     {
       name: 'fortly-store',
       storage: createJSONStorage(() => AsyncStorage),
-      version: 4,
+      version: 5,
+      partialize: (state) => {
+        // Exclude chatMessages from persistence — chat resets on app restart
+        const { chatMessages, ...persisted } = state;
+        return persisted as any;
+      },
       migrate: (persistedState: any, version: number) => {
         if (version < 3) {
           persistedState.chatMessages = [];
         }
         if (version < 4) {
           persistedState.isOnboardingComplete = persistedState.monthlyIncome > 0;
+        }
+        if (version < 5) {
+          persistedState.themePreference = 'system';
         }
         return persistedState;
       },
