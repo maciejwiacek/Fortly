@@ -33,8 +33,8 @@ export default function TransactionsScreen() {
   };
 
   return (
-    <AnimatedTabScreen>
     <SafeAreaView className="flex-1 bg-background" edges={['top']}>
+      <AnimatedTabScreen>
       {/* Header */}
       <View className="flex-row items-center justify-between px-4 pt-4 pb-2">
         <Text className="font-sans-bold text-2xl text-foreground">Transactions</Text>
@@ -113,7 +113,7 @@ export default function TransactionsScreen() {
       <View className="flex-1">
         <TransactionList transactions={transactions} />
       </View>
+      </AnimatedTabScreen>
     </SafeAreaView>
-    </AnimatedTabScreen>
   );
 }

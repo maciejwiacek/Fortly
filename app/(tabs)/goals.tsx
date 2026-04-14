@@ -15,8 +15,8 @@ export default function GoalsScreen() {
   const [showCreate, setShowCreate] = useState(false);
 
   return (
-    <AnimatedTabScreen>
     <SafeAreaView className="flex-1 bg-background" edges={['top']}>
+      <AnimatedTabScreen>
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View className="flex-row items-center justify-between px-4 pt-4 pb-2">
@@ -69,8 +69,8 @@ export default function GoalsScreen() {
         <SafeAreaView edges={['bottom']} style={{ height: 120 }} />
       </ScrollView>
 
+      </AnimatedTabScreen>
       {showCreate && <CreateGoalSheet onClose={() => setShowCreate(false)} />}
     </SafeAreaView>
-    </AnimatedTabScreen>
   );
 }

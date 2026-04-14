@@ -5,6 +5,7 @@ import * as Haptics from 'expo-haptics';
 import { OnboardingScreen } from '../../components/onboarding/onboarding-screen';
 import { ContinueButton } from '../../components/onboarding/continue-button';
 import { useFinanceStore } from '../../stores/finance-store';
+import { useThemeColors } from '../../hooks/use-theme-colors';
 import { BUDGET_STRATEGIES, type BudgetStrategyType } from '../../lib/types';
 import { formatPLN } from '../../lib/utils';
 
@@ -37,6 +38,7 @@ export default function BudgetStrategyScreen() {
     STRATEGY_TYPES.includes(initialStrategy as BudgetStrategyType) ? initialStrategy as BudgetStrategyType : '50-30-20'
   );
 
+  const colors = useThemeColors();
   const recommendedType = pulse as string;
 
   const handleSelect = (type: BudgetStrategyType) => {
@@ -82,7 +84,7 @@ export default function BudgetStrategyScreen() {
               className={`rounded-xl p-4 ${isSelected ? '' : 'bg-card'}`}
               style={
                 isSelected
-                  ? { backgroundColor: '#1E40AF20', borderWidth: 1.5, borderColor: '#3B82F6' }
+                  ? { backgroundColor: colors.primary + '15', borderWidth: 1.5, borderColor: colors.primary }
                   : { borderWidth: 1.5, borderColor: 'transparent' }
               }
             >

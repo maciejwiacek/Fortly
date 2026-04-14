@@ -1,5 +1,5 @@
-import { useIsFocused } from '@react-navigation/native';
-import { useEffect } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
 import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 
 interface Props {
@@ -7,16 +7,14 @@ interface Props {
 }
 
 export function AnimatedTabScreen({ children }: Props) {
-  const isFocused = useIsFocused();
-  const opacity = useSharedValue(0);
+  const opacity = useSharedValue(1);
 
-  useEffect(() => {
-    if (isFocused) {
-      opacity.value = withTiming(1, { duration: 200 });
-    } else {
+  useFocusEffect(
+    useCallback(() => {
       opacity.value = 0;
-    }
-  }, [isFocused]);
+      opacity.value = withTiming(1, { duration: 200 });
+    }, [])
+  );
 
   const animatedStyle = useAnimatedStyle(() => ({
     flex: 1,

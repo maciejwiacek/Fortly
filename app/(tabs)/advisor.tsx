@@ -162,8 +162,8 @@ export default function AdvisorScreen() {
   ];
 
   return (
-    <AnimatedTabScreen>
       <SafeAreaView className="flex-1 bg-background" edges={['top']}>
+        <AnimatedTabScreen>
         {/* Header */}
         <View className="flex-row items-center justify-between px-4 pt-4 pb-3">
           <View>
@@ -221,7 +221,7 @@ export default function AdvisorScreen() {
         <Animated.View style={{ height: keyboardHeight }} />
         {/* Spacer for floating tab bar — hidden when keyboard is open */}
         {!keyboardOpen && <View style={{ height: 110 }} />}
+        </AnimatedTabScreen>
       </SafeAreaView>
-    </AnimatedTabScreen>
   );
 }

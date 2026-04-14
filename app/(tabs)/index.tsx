@@ -25,8 +25,8 @@ export default function DashboardScreen() {
   const remaining = Math.max(0, monthlyIncome - totalSpent);
 
   return (
-    <AnimatedTabScreen>
     <SafeAreaView className="flex-1 bg-background" edges={['top']}>
+      <AnimatedTabScreen>
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         <PageHeader greeting showSettings subtitle={formatMonthDisplay(monthKey)} title="Dashboard" />
 
@@ -69,7 +69,7 @@ export default function DashboardScreen() {
 
         <SafeAreaView edges={['bottom']} style={{ height: 120 }} />
       </ScrollView>
+      </AnimatedTabScreen>
     </SafeAreaView>
-    </AnimatedTabScreen>
   );
 }

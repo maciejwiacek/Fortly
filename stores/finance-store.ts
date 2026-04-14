@@ -115,6 +115,11 @@ export const useFinanceStore = create<FinanceStore>()(
       name: 'fortly-store',
       storage: createJSONStorage(() => AsyncStorage),
       version: 5,
+      partialize: (state) => {
+        // Exclude chatMessages from persistence — chat resets on app restart
+        const { chatMessages, ...persisted } = state;
+        return persisted as any;
+      },
       migrate: (persistedState: any, version: number) => {
         if (version < 3) {
           persistedState.chatMessages = [];

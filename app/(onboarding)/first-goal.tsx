@@ -70,8 +70,8 @@ export default function FirstGoalScreen() {
             onChangeText={setLabel}
             placeholder="e.g. New Car, Vacation, Emergency Fund"
             placeholderTextColor={colors.muted}
-            selectionColor="#3B82F6"
-            style={{ backgroundColor: '#192134', borderRadius: 12, paddingHorizontal: 16, paddingVertical: 14, fontFamily: 'Inter_500Medium', fontSize: 16, color: '#F8FAFC' }}
+            selectionColor={colors.primaryLight}
+            style={{ backgroundColor: colors.card, borderRadius: 12, paddingHorizontal: 16, paddingVertical: 14, fontFamily: 'Inter_500Medium', fontSize: 16, color: colors.foreground }}
           />
         </View>
 
@@ -85,8 +85,8 @@ export default function FirstGoalScreen() {
               keyboardType="decimal-pad"
               placeholder="0"
               placeholderTextColor={colors.muted}
-              selectionColor="#3B82F6"
-              style={{ flex: 1, fontFamily: 'Inter_500Medium', fontSize: 18, color: '#F8FAFC', paddingVertical: 14 }}
+              selectionColor={colors.primaryLight}
+              style={{ flex: 1, fontFamily: 'Inter_500Medium', fontSize: 18, color: colors.foreground, paddingVertical: 14 }}
             />
             <Text className="font-sans text-lg text-muted-foreground ml-2">zl</Text>
           </View>
@@ -103,7 +103,7 @@ export default function FirstGoalScreen() {
           <Switch
             value={isDebt}
             onValueChange={setIsDebt}
-            trackColor={{ false: '#1E293B', true: '#F43F5E' }}
+            trackColor={{ false: colors.border, true: '#F43F5E' }}
             thumbColor="#FFFFFF"
           />
         </View>
@@ -122,7 +122,7 @@ export default function FirstGoalScreen() {
                   borderRadius: 14,
                   alignItems: 'center',
                   justifyContent: 'center',
-                  backgroundColor: icon === iconName ? color + '30' : colors.background,
+                  backgroundColor: icon === iconName ? color + '30' : colors.card,
                   borderWidth: icon === iconName ? 1.5 : 0,
                   borderColor: icon === iconName ? color : 'transparent',
                 }}
@@ -130,7 +130,7 @@ export default function FirstGoalScreen() {
                 <Feather
                   name={iconName as any}
                   size={22}
-                  color={icon === iconName ? color : '#94A3B8'}
+                  color={icon === iconName ? color : colors.mutedForeground}
                 />
               </Pressable>
             ))}
@@ -151,7 +151,7 @@ export default function FirstGoalScreen() {
                   borderRadius: 22,
                   backgroundColor: c,
                   borderWidth: color === c ? 3 : 0,
-                  borderColor: '#FFFFFF',
+                  borderColor: colors.foreground,
                 }}
               />
             ))}

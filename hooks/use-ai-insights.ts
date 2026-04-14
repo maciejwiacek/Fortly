@@ -1,19 +1,19 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { buildFinancialContext } from '../lib/ai-context';
 import { generateInsight } from '../lib/gemini-api';
 import { useFinanceStore } from '../stores/finance-store';
 
 const FALLBACK_TIPS = [
-  'Przejrzyj subskrypcje — często płacisz za usługi, z których nie korzystasz.',
-  'Spróbuj zasady 24 godzin — przed większym zakupem poczekaj dzień.',
-  'Ustaw automatyczny przelew na oszczędności w dniu wypłaty.',
-  'Gotuj w domu zamiast zamawiać — możesz zaoszczędzić nawet 500 zł miesięcznie.',
-  'Porównuj ceny przed zakupami online — różnice bywają ogromne.',
-  'Zapisuj każdy wydatek — świadomość wydatków to pierwszy krok do oszczędzania.',
-  'Rozważ tańsze alternatywy dla swoich stałych wydatków.',
-  'Planuj posiłki na tydzień — mniej marnujesz jedzenia i pieniędzy.',
+  'Review your subscriptions — you might be paying for unused services.',
+  'Try the 24-hour rule — wait a day before making big purchases.',
+  'Set up an automatic transfer to savings on payday.',
+  'Cook at home instead of ordering — you could save up to 500 PLN monthly.',
+  'Compare prices before buying online — differences can be huge.',
+  'Track every expense — awareness is the first step to saving.',
+  'Consider cheaper alternatives for your regular expenses.',
+  'Plan meals for the week — less food waste, more savings.',
 ];
 
 function getCacheKey(): string {
@@ -21,11 +21,7 @@ function getCacheKey(): string {
 }
 
 function getRandomFallback(): string {
-  const dayOfYear = Math.floor(
-    (Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) /
-      (1000 * 60 * 60 * 24)
-  );
-  return FALLBACK_TIPS[dayOfYear % FALLBACK_TIPS.length];
+  return FALLBACK_TIPS[Math.floor(Math.random() * FALLBACK_TIPS.length)];
 }
 
 export function useAIInsights(): {
@@ -35,8 +31,14 @@ export function useAIInsights(): {
 } {
   const [insight, setInsight] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const isMounted = useRef(true);
 
-  const store = useFinanceStore();
+  const monthlyIncome = useFinanceStore((s) => s.monthlyIncome);
+  const budgetStrategy = useFinanceStore((s) => s.budgetStrategy);
+  const transactions = useFinanceStore((s) => s.transactions);
+  const goals = useFinanceStore((s) => s.goals);
+  const goalContributions = useFinanceStore((s) => s.goalContributions);
+  const investmentEntries = useFinanceStore((s) => s.investmentEntries);
 
   const fetchInsight = useCallback(
     async (skipCache = false) => {
@@ -48,41 +50,51 @@ export function useAIInsights(): {
         if (!skipCache) {
           const cached = await AsyncStorage.getItem(cacheKey);
           if (cached) {
-            setInsight(cached);
-            setIsLoading(false);
+            if (isMounted.current) {
+              setInsight(cached);
+              setIsLoading(false);
+            }
             return;
           }
         }
 
         const context = buildFinancialContext({
-          monthlyIncome: store.monthlyIncome,
-          budgetStrategy: store.budgetStrategy,
-          transactions: store.transactions,
-          goals: store.goals,
-          goalContributions: store.goalContributions,
-          investmentEntries: store.investmentEntries,
+          monthlyIncome,
+          budgetStrategy,
+          transactions,
+          goals,
+          goalContributions,
+          investmentEntries,
         });
 
         const result = await generateInsight(context);
 
-        if (result) {
-          setInsight(result);
-          await AsyncStorage.setItem(cacheKey, result);
-        } else {
-          setInsight(getRandomFallback());
+        if (isMounted.current) {
+          if (result) {
+            setInsight(result);
+            await AsyncStorage.setItem(cacheKey, result);
+          } else {
+            setInsight(getRandomFallback());
+          }
         }
       } catch {
-        setInsight(getRandomFallback());
+        if (isMounted.current) {
+          setInsight(getRandomFallback());
+        }
       } finally {
-        setIsLoading(false);
+        if (isMounted.current) {
+          setIsLoading(false);
+        }
       }
     },
-    [store.monthlyIncome, store.budgetStrategy, store.transactions, store.goals, store.goalContributions, store.investmentEntries]
+    [monthlyIncome, budgetStrategy, transactions, goals, goalContributions, investmentEntries]
   );
 
   useEffect(() => {
+    isMounted.current = true;
     fetchInsight();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    return () => { isMounted.current = false; };
+  }, [fetchInsight]);
 
   const refresh = useCallback(() => {
     fetchInsight(true);

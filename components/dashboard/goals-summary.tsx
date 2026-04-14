@@ -11,21 +11,20 @@ export function GoalsSummary() {
   const router = useRouter();
   const colors = useThemeColors();
 
-  // Pick the incomplete goal closest to completion
   const featured = goals
     .filter((g) => g.percentage < 100)
     .sort((a, b) => b.percentage - a.percentage)[0];
 
-  if (!featured) return null;
-
-  const ratio = clamp(featured.percentage / 100, 0, 1);
+  const ratio = featured ? clamp(featured.percentage / 100, 0, 1) : 0;
 
   const barStyle = useAnimatedStyle(() => ({
     width: `${withTiming(ratio * 100, { duration: 600 })}%` as any,
     height: 6,
     borderRadius: 3,
-    backgroundColor: featured.color,
+    backgroundColor: featured?.color ?? colors.primary,
   }));
+
+  if (!featured) return null;
 
   return (
     <View className="mx-4 mb-3">
@@ -58,7 +57,6 @@ export function GoalsSummary() {
           </Text>
         </View>
 
-        {/* Progress bar */}
         <View style={{ height: 6, borderRadius: 3, backgroundColor: colors.trackBackground, overflow: 'hidden' }}>
           <Animated.View style={barStyle} />
         </View>

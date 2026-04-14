@@ -69,7 +69,7 @@ function BudgetRing({ label, spent, budget, color, trackColor }: RingProps) {
         {label}
       </Text>
       <Text className="font-sans text-xs text-muted-foreground" style={{ fontSize: 10 }}>
-        {formatPLN(spent)}
+        {formatPLN(spent)} / {formatPLN(budget)}
       </Text>
     </View>
   );
