@@ -30,8 +30,10 @@ function useKeyboard() {
       Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
       (e) => {
         setIsOpen(true);
+        // On Android, add extra offset so keyboard doesn't cover the input
+        const extra = Platform.OS === 'android' ? 24 : 0;
         Animated.timing(height, {
-          toValue: e.endCoordinates.height,
+          toValue: e.endCoordinates.height + extra,
           duration: e.duration || 250,
           useNativeDriver: false,
         }).start();
@@ -218,7 +220,7 @@ export default function AdvisorScreen() {
         <ChatInput onSend={handleSend} disabled={isLoading} />
         <Animated.View style={{ height: keyboardHeight }} />
         {/* Spacer for floating tab bar — hidden when keyboard is open */}
-        {!keyboardOpen && <View style={{ height: 110 }} />}
+        {!keyboardOpen && <View style={{ height: 96 }} />}
       </SafeAreaView>
   );
 }

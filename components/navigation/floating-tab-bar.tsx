@@ -66,7 +66,9 @@ export function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
   // Hide after all hooks have been called
   if (keyboardVisible) return null;
 
-  const bottomOffset = Math.max(insets.bottom, 12);
+  const bottomOffset = Platform.OS === 'android'
+    ? Math.max(insets.bottom, 24)
+    : Math.max(insets.bottom, 12);
 
   const handleTabPress = (routeName: string) => {
     Haptics.selectionAsync();
